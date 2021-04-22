@@ -9,7 +9,7 @@ import akka.event.LoggingAdapter;
 import java.io.*;
 
 
-public class Boss1 extends UntypedActor {
+public class Boss extends UntypedActor {
 
     //to print debugging messages
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
@@ -19,7 +19,7 @@ public class Boss1 extends UntypedActor {
 
         log.info("Starting Boss Actor");
 
-        ActorRef worker =  getContext().actorOf(Props.create(Worker1.class), "Worker");   //create one worker
+        ActorRef worker =  getContext().actorOf(Props.create(Worker.class), "Worker");   //create one worker
 
         //Scanner scanner = new Scanner(System.in);
         log.info("Enter a first name, last Name, address, salary, or age");
@@ -41,7 +41,7 @@ public class Boss1 extends UntypedActor {
 
             log.info("Boss received message: " + msg.toString());  //print the identity of the sender
 
-            getSender().tell(new String("terminate"), getSelf());  //respond to the sender worker with another message
+            getSender().tell(("terminate"), getSelf());  //respond to the sender worker with another message
 
         } else {
 

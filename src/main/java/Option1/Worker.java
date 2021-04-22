@@ -10,7 +10,7 @@ import java.io.FileReader;
 import java.util.List;
 
 
-public class Worker1 extends UntypedActor {
+public class Worker extends UntypedActor {
 
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 

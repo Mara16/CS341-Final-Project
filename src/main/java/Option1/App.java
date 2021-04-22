@@ -23,7 +23,7 @@ public class App {
         //ActorRef is an immutable and serializable handle (thread-safe and fully share-able) to an actor.
         //the first input is the class you use to create that actor
         //the second input is the optional name you give to that actor
-        ActorRef bossActor = system.actorOf(Props.create(Boss1.class), "Boss");
+        ActorRef bossActor = system.actorOf(Props.create(Boss.class), "Boss");
 
     }
 }
