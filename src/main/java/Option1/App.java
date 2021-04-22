@@ -1,4 +1,10 @@
 /*
+* The main App class for the Final project.
+*
+* 1. Creates and Launches GUI.
+* 2. Creates and Launches two Peer Machines, each with its own ActorSystem to communicate with their workers.
+* 3. Listens for Messages from GUI (how??) and from Peer machines (over MQTT)
+*
 * CS342: Parallel Systems & Distributed Systems - Final Project
 * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
 * Professor Ahmed Khaled
