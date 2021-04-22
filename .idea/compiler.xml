@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Final" />
+        <module name="CS341-Final-Project" />
         <module name="CS341-Final" />
         <module name="Lecture_Code" />
+        <module name="Final" />
       </profile>
     </annotationProcessing>
   </component>
