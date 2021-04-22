@@ -1,3 +1,15 @@
+/*
+ * The Worker Machine class for the Final project.
+ *
+ * 1. Initializes the worker - finding the right file to read, setting up CSV reader, etc.
+ * 2. Listens for messages from Boss over Actor system.
+ * 3. Processes message and sends response to Boss over Actor system.
+ *
+ * CS342: Parallel Systems & Distributed Systems - Final Project
+ * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
+ * Professor Ahmed Khaled
+ * Spring 2021
+ */
 package Option1;
 
 import akka.actor.UntypedActor;

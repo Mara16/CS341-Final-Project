@@ -1,3 +1,19 @@
+/*
+ * The Peer Machine class for the Final project.
+ * This class is equivalent to a Boss machine in Actor system, since each Peer machine should be a boss actor.
+ *
+ * 1. Creates 4 workers in the system.
+ * 2. Listens for messages over MQTT from the Client.
+ * 3. Sends messages to workers over the actor system for processing the work.
+ * 4. Listens for messages over the actor system from workers.
+ * 5. Sends response to Client over MQTT.
+ *
+ * CS342: Parallel Systems & Distributed Systems - Final Project
+ * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
+ * Professor Ahmed Khaled
+ * Spring 2021
+ */
+
 package Option1;
 
 import akka.actor.ActorRef;
@@ -10,7 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Boss extends UntypedActor {
+public class PeerMachine extends UntypedActor {
 
     //to print debugging messages
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
