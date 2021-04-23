@@ -5,7 +5,7 @@
  * 2. Listens for messages from Boss over Actor system.
  * 3. Processes message and sends response to Boss over Actor system.
  *
- * CS342: Parallel Systems & Distributed Systems - Final Project
+ * CS341: Parallel Computing & Distributed Systems - Final Project
  * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
  * Professor Ahmed Khaled
  * Spring 2021
