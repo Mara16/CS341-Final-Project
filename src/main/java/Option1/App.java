@@ -17,13 +17,15 @@ package Option1;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class App {
 
-    final static int NUM_PEER_MACHINES = 2;
+    public final static int NUM_PEER_MACHINES = 2;
+    public final static String MQTT_BROKER = "tcp://broker.hivemq.com:1883";
+
     static ActorSystem[] systems;
     static ActorRef[] pMachines;
-
 
     public static void main(String[] args) {
 
@@ -31,6 +33,7 @@ public class App {
 
         // 2. Creates and Launches two Peer Machines, each with its own ActorSystem to communicate with their workers.
         systems = new ActorSystem[NUM_PEER_MACHINES];
+        pMachines = new ActorRef[NUM_PEER_MACHINES];
         for (int i = 1; i <= NUM_PEER_MACHINES; i++) {
             systems[i - 1] = ActorSystem.create("PMSystem" + i);
             pMachines[i - 1] = systems[i-1].actorOf(Props.create(PeerMachine.class), "PeerMachine" + i);
@@ -40,5 +43,15 @@ public class App {
 
         // 4. Listens for Messages from Peer machines (over MQTT)
 
+    }
+
+    // Handles an MQTTExcpetion by printing the Exception details
+    public static void handleMQTTException(MqttException mex) {
+        System.out.println("reason " + mex.getReasonCode());
+        System.out.println("msg " + mex.getMessage());
+        System.out.println("loc " + mex.getLocalizedMessage());
+        System.out.println("cause " + mex.getCause());
+        System.out.println("excep " + mex);
+        mex.printStackTrace();
     }
 }
