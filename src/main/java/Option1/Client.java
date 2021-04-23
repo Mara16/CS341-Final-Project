@@ -25,7 +25,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 public class Client {
 
     // MQTT Client ID for the class
-    final static String CLIENT_ID = "TEAM2_ClientMachine";
+    final static String CLIENT_ID = "Team2_ClientMachine";
 
     private MqttClient mqttClient;
 
