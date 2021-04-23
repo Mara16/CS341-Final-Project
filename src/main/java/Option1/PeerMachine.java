@@ -8,7 +8,7 @@
  * 4. Listens for messages over the actor system from workers.
  * 5. Sends response to Client over MQTT.
  *
- * CS342: Parallel Systems & Distributed Systems - Final Project
+ * CS341: Parallel Computing & Distributed Systems - Final Project
  * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
  * Professor Ahmed Khaled
  * Spring 2021
@@ -45,11 +45,9 @@ public class PeerMachine extends UntypedActor {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String input = reader.readLine();
 
-
         log.info("You entered " + input);
 
         log.info("Boss is creating 4 workers to search a file each for \"" + input +"\"");
-
     }
 
     @Override
@@ -67,11 +65,9 @@ public class PeerMachine extends UntypedActor {
         }
     }
 
-
     @Override
     public void postStop() {                        //what to do when terminated
 
         log.info("terminating the Boss actor");
-
     }
 }

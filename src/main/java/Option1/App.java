@@ -6,7 +6,7 @@
  * 3. Listens for Messages from Client (how??)
  * 4. Listens for Messages from Peer machines (over MQTT)
  *
- * CS342: Parallel Systems & Distributed Systems - Final Project
+ * CS342: Parallel Computing & Distributed Systems - Final Project
  * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
  * Professor Ahmed Khaled
  * Spring 2021
@@ -39,7 +39,6 @@ public class App {
         // 3. Listens for Messages from Client (how??)
 
         // 4. Listens for Messages from Peer machines (over MQTT)
-
 
     }
 }
