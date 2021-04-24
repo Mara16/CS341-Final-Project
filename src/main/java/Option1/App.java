@@ -21,6 +21,18 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class App {
 
+    // Enum for the types of messages there can be
+    public enum type {
+        CL_2_PM,
+        PM_2_CL,
+        PM_2_W,
+        W_2_PM,
+        STOP
+    }
+
+    // int indices for the Strings arrays
+    public static final int FNAME = 0, LNAME = 1, ADDRESS = 2, SALARY = 3, AGE = 4;
+
     public final static int NUM_PEER_MACHINES = 2;
     public final static String MQTT_BROKER = "tcp://broker.hivemq.com:1883";
 
