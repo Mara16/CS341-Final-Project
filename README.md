@@ -4,13 +4,15 @@
 
 **1.** The `App.Java` is the entry point of the program:
 
-
-- Creates a client object to launch GUI
+- Creates a Client object to launch GUI
     - stuff stuff stuff
     - stuff stuff stuff
 
 - Creates and launches two Peer Machines
-    - Each Peer Machines communicates with their respective `worker` via an ActorSystem
+    - In the for loop:
+      - Uses the actor model (from assignment 5) to create the ActorSystem
+      - Each ActorRef calls `PeerMachine` class to create a peer machine each. They each take two parameters 1) the class being used to create the actor and 2) the optional name being given to that actor, which is "PM i" in this case.
+    - This will enable each Peer Machines to communicate with their respective `worker` via an ActorSystem
 
 - Handles an MQTTExcpetion by printing the Exception details
 
@@ -19,14 +21,26 @@
 
 **3.** `PeerMachine.java`
 
-**3.** `Worker.java`
+- **prestart()** is accessed when the PeerMachine "PM i" is initially created and started.
+  - As part of setting up the PeerMachine, in the for loop it is: 
+    - Creating 4 workers 
+    - Converting the initial message from Message Object to JSON 
+    - sending the JSON formatted data to appropiate worker (worker 1 to 4)
+  - Finally, it also initializes the MQTT Client by calling **initializeMQTTStuff()**
+  
+- **initializeMQTTStuff()** 
 
-**3.** `Message.java`
+**4.** `Worker.java`
+- **prestart()** simply starts the worker
+- **onReceive()**
+- **postStop()**
 
-**3.** All `.csv` files contains data for 1,0000 workers (Name - string, salary - float, address - string, and age - integer)., which are formatted in the following form:
+**5.** `Message.java`
+
+**6.** All `.csv` files contains data for 1,0000 workers (Name - string, salary - float, address - string, and age - integer)., which are formatted in the following form:
 
 
-| First Name      | Last Name | Address     | Salary | Age |
-| :---        |    :----:   |          ---: |       ---: |   ---: |
-| Harry      | Potter       | 05180 Sparks Run Port Keith. MO 48921 | 58000    | 32       | 
-| Samantha   | Jones        |949 Cortez Path Santanafurt. NV 58500  | 41000    | 38       |
+| First Name      | Last Name | Address                               | Salary   | Age  |
+| :---            |    :----: |          ---:                         |     ---: | ---: |
+| Harry           | Potter    | 05180 Sparks Run Port Keith. MO 48921 | 58000    | 32   | 
+| Samantha        | Jones     |949 Cortez Path Santanafurt. NV 58500  | 41000    | 38   |

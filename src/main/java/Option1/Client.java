@@ -32,6 +32,7 @@ public class Client {
     final static String CLIENT_ID = "Team2_ClientMachine";
     private Gson gson;
 
+    private int numberOfResponses = 0;
 
     private MqttClient mqttClient;
 
@@ -70,28 +71,32 @@ public class Client {
         mqttClient.setCallback(new MqttCallback() {
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                System.out.println("Message has arrived on Client Machine via MQTT." + "\n" + topic +
-                        "\n\tMessage: " + new String(mqttMessage.getPayload()));
+                System.out.println("\nA message has arrived on Client Machine via MQTT" + "\nfrom topic: " + topic +
+                        "\nMessage: " + new String(mqttMessage.getPayload()));
 
                 // TODO - wait for 2 peer machine replies before new search
 
-                // The user, through the terminal/GUI, can type one of the commands
-                // prompt user for another command?
-                System.out.println("Enter a first name: ");
-                String statement = "";
-                Scanner in = new Scanner(System.in);
-                statement = in.next();
+                numberOfResponses++;
+                // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
+                if (numberOfResponses == 2) {
 
-                // TODO - edit row
-                String[] row = {statement, "", "", "", ""};
-                Message msg = new Message(App.type.CL_2_PM, null, row, null);
-                gson = new Gson();
-                String toSend = gson.toJson(msg);
+                    System.out.println("\nReceived responses from both Peer Machines. Ready for another query! :D");
+                    System.out.println("\nEnter a first name: ");
+                    String firstName = "";
+                    Scanner in = new Scanner(System.in);
+                    firstName = in.next();
 
-                // publish to both peer machines
-                mqttMessage = new MqttMessage(toSend.getBytes());
-                mqttMessage.setQos(1);
-                mqttClient.publish("/CS341FinalProj/Team2/FromClient", mqttMessage);
+                    // TODO - edit row
+                    String[] row = {firstName, "", "", "", ""};
+                    Message msg = new Message(App.type.CL_2_PM, null, row, null);
+                    gson = new Gson();
+                    String toSend = gson.toJson(msg);
+
+                    // publish to both peer machines
+                    mqttMessage = new MqttMessage(toSend.getBytes());
+                    mqttMessage.setQos(1);
+                    mqttClient.publish("/CS341FinalProj/Team2/FromClient", mqttMessage);
+                }
             }
 
             @Override

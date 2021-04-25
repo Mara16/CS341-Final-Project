@@ -76,7 +76,6 @@ public class Worker extends UntypedActor {
                 // Convert to JSON and send to Boss over Actor System
                 String responseJsonStr = gson.toJson(responseMsg);
                 getSender().tell(responseJsonStr, getSelf());
-
             }
         } else {
             unhandled(o);     //received undefined msg
