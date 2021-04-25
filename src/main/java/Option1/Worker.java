@@ -13,8 +13,7 @@
 package Option1;
 
 import akka.actor.UntypedActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import com.google.gson.Gson;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
@@ -24,62 +23,35 @@ import java.util.List;
 
 public class Worker extends UntypedActor {
 
-    LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+    private String name;
+    private Gson gson;
 
     @Override
-    public void preStart() {                                            //what to do when created and started
-        log.info("Starting " + getSelf().path().name() + " Actor");
+    public void preStart() {
+        name = getSelf().path().name();
+        gson = new Gson();
+
+        System.out.println("Starting Worker: " + name);
     }
 
     @Override
-    public void onReceive(Object msg) {                                 //what to do when message is received
+    public void onReceive(Object o) {
 
-        if (msg instanceof String && msg.equals("terminate")) {
-            getContext().stop(getSelf());                               //terminate the current worker
+        if (o instanceof String){
+            String msgStr = (String) o;
+            Message msg = gson.fromJson(msgStr, Message.class);
 
-        } else if (msg instanceof String) {
-
-            // worker name
-            String workerName = getSelf().path().name();
-
-            // determine file number to search
-            String fileNum = String.valueOf(workerName.charAt(workerName.length()-1));
-
-            log.info(workerName + " received the following message from "+ getSender().path().name() + ": " + msg.toString());              //print the identity of the sender
-            int count = 0;
-
-            String[] names = msg.toString().split(",");
-            String name = names[names.length-1].replaceAll("\\s", "");
-
-            try {
-                String fileName = "path..." + fileNum +".csv";
-
-                FileReader filereader = new FileReader(fileName);
-
-                CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
-                List<String[]> allData = csvReader.readAll();
-
-                for (String[] row : allData) {
-                    for (String cell : row) {
-                        if (cell.equalsIgnoreCase(name))
-                            count++;
-                    }
-                }
+            if(msg.type == App.type.PM2_2_W_CSV){
+                
             }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            String reply = workerName + " reported " + count + " occurrences in file " + fileNum;
-            getSender().tell(reply, getSelf());  //respond to the sender worker with another message
         }
         else {
-            unhandled(msg);                                             //received undefined msg
+            unhandled(o);     //received undefined msg
         }
     }
 
     @Override
-    public void postStop() {                                            //what to do when terminated
-        log.info("terminating " + getSelf().path().name());
+    public void postStop() {
+        System.out.println("Terminating Worker " + name);
     }
 }
