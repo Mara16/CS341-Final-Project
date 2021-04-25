@@ -17,4 +17,13 @@ public class Message {
     // A list of rows of information - sent back as result of a
     // search from Worker to PeerMachine and PeerMachine to Client.
     List<String[]> results;
+
+    public Message() {}
+
+    public Message(App.type type, String msg, String[] row, List<String[]> results) {
+        this.type = type;
+        this.msg = msg;
+        this.row = row;
+        this.results = results;
+    }
 }
