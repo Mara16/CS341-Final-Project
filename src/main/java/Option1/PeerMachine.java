@@ -20,6 +20,8 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import com.google.gson.Gson;
+import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class PeerMachine extends UntypedActor {
 
@@ -38,23 +41,25 @@ public class PeerMachine extends UntypedActor {
     private int numResponses = 0;
     private List<String[]> searchResults;
 
+    private MqttClient mqttClient;
+    private String CLIENT_ID = "Team2_";
+
     private Gson gson;
 
     @Override
-    public void preStart() throws IOException {
+    public void preStart() throws MqttException {
 
         name = getSelf().path().name();
         machineNumber = Integer.parseInt(name.replaceAll("[^0-9]", ""));
-        System.out.println("PeerMachine " + name + " created.");
+        CLIENT_ID += name;  // CLIENT_ID is now something like "Team2_PM1"
 
         gson = new Gson();
 
-        String csvPathWithHashTag = getPathToCSVs();
-        Message msg = new Message();
+        Message initialMsgToWorkers = new Message();
+        // Set the type of message sent to worker as "message with CSV path".
+        initialMsgToWorkers.type = App.type.PM2_2_W_CSV;
 
-        // Set the type of message sent to worker as
-        // "message with CSV path".
-        msg.type = App.type.PM2_2_W_CSV;
+        String csvPathWithHashTag = getPathToCSVs();
 
         // Create workers
         // Note: They go from 1 to 4, not 0 to 3.
@@ -64,10 +69,10 @@ public class PeerMachine extends UntypedActor {
                     name + "_W" + i);
 
             // Update the path to reflect the CSV file for that worker
-            msg.msg = csvPathWithHashTag.replace("File#", "File" + i);
+            initialMsgToWorkers.msg = csvPathWithHashTag.replace("File#", "File" + i);
 
             // Convert the Message object to JSON
-            String toSend = gson.toJson(msg);
+            String toSend = gson.toJson(initialMsgToWorkers);
 
             // Send JSON to worker
             workers[i - 1].tell(toSend, self());
@@ -82,13 +87,9 @@ public class PeerMachine extends UntypedActor {
             workers[i - 1].tell(gson.toJson(testMsg), self());
         }
 
-        // TODO: MQTT part
-        /*// Message that PM_n receives from Client Program
-        if(msg.type == App.type.CL_2_PM){
+        initializeMQTTStuff();
 
-        }*/
-
-
+        System.out.println("PeerMachine " + name + " created.");
     }
 
     @Override
@@ -136,6 +137,65 @@ public class PeerMachine extends UntypedActor {
     public void postStop() {                        //what to do when terminated
 
         System.out.println("Terminating worker");
+    }
+
+    // Method to create and initialize the MQTT Client that represents
+    // this Peer machine.
+    private void initializeMQTTStuff() throws MqttException {
+        // Construct the MQTT Client
+        this.mqttClient = new MqttClient(
+                App.MQTT_BROKER, CLIENT_ID, new MemoryPersistence()
+        );
+
+        MqttConnectOptions connOpts = new MqttConnectOptions();
+        connOpts.setCleanSession(true);
+
+        // Connecting to the broker
+        this.mqttClient.connect(connOpts);
+        System.out.println(this.name + " connected to broker: " + App.MQTT_BROKER);
+
+        // Subscribing to topic - QoS 1
+        mqttClient.subscribe("/CS341FinalProj/Team2/FromClient", 1);
+
+        // Set the callback for PeerMachine's MQTT client
+        mqttClient.setCallback(new MqttCallback() {
+
+            @Override
+            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+
+                System.out.println("Message has arrived on PeerMachne via MQTT." + "\n" + topic +
+                        "\n\tMessage: " + new String(mqttMessage.getPayload()));
+
+                String msgStr = new String(mqttMessage.getPayload());
+                Message clientMsg = gson.fromJson(msgStr, Message.class);
+
+                // Message that PM_n receives from Client Program
+                if (clientMsg.type == App.type.CL_2_PM) {
+
+                    // Construct JSON to send from PM to each worker
+                    Message toWorkerMsg = new Message();
+                    toWorkerMsg.type = App.type.PM_2_W_Q;
+                    toWorkerMsg.row = clientMsg.row;
+                    String toWorkerJson = gson.toJson(toWorkerMsg);
+
+                    // Send query request json to each worker
+                    for (var worker : workers){
+                        worker.tell(toWorkerJson, getSelf());
+                    }
+                }
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                System.out.println(name + " lost/disconnected from MQTT connection.");
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+                //System.out.println(name + " delivered message to Broker.");
+            }
+        });
     }
 
     // Get the absoltute path string for the folder holding
