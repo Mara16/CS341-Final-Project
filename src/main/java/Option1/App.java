@@ -34,6 +34,8 @@ public class App {
 
     // int indices for the Strings arrays
     public static final int FNAME = 0, LNAME = 1, ADDRESS = 2, SALARY = 3, AGE = 4;
+    // Number of columns in dataset.
+    public static final int NUM_COLUMNS = 5;
 
     public final static int NUM_PEER_MACHINES = 2;
     public final static String MQTT_BROKER = "tcp://broker.hivemq.com:1883";
