@@ -1,3 +1,13 @@
+/*
+ * The Message class contains messages being sent between virtual devices.
+ *
+ *
+ * CS342: Parallel Computing & Distributed Systems - Final Project
+ * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
+ * Professor Ahmed Khaled
+ * Spring 2021
+ */
+
 package Option1;
 
 import java.util.List;
