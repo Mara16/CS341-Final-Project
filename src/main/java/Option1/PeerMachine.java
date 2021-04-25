@@ -43,6 +43,7 @@ public class PeerMachine extends UntypedActor {
 
     private MqttClient mqttClient;
     private String CLIENT_ID = "Team2_";
+    private String mqttTopicToClient;
 
     private Gson gson;
 
@@ -52,6 +53,7 @@ public class PeerMachine extends UntypedActor {
         name = getSelf().path().name();
         machineNumber = Integer.parseInt(name.replaceAll("[^0-9]", ""));
         CLIENT_ID += name;  // CLIENT_ID is now something like "Team2_PM1"
+        mqttTopicToClient = "/CS341FinalProj/Team2/FromPeerMachine/" + this.name;
 
         gson = new Gson();
 
@@ -93,7 +95,7 @@ public class PeerMachine extends UntypedActor {
     }
 
     @Override
-    public void onReceive(Object o) {
+    public void onReceive(Object o) throws MqttException {
         if (o instanceof String) {
 
             String msgStr = (String) o;
@@ -112,7 +114,7 @@ public class PeerMachine extends UntypedActor {
                 // Received response from all workers.
                 if (this.numResponses == NUM_WORKERS) {
 
-                    //System.out.println(this.name + " got response from all workers");
+                    System.out.println(this.name + " got response from all workers");
 
                     // Create response to send to Client
                     Message responseMsg = new Message();
@@ -120,7 +122,10 @@ public class PeerMachine extends UntypedActor {
                     responseMsg.results = this.searchResults;
                     String responseJson = gson.toJson(responseMsg);
 
-                    // TODO : Send response JSON to Client over MQTT
+                    // Send response JSON to Client over MQTT
+                    var mqttResponseJson = new MqttMessage(responseJson.getBytes());
+                    mqttResponseJson.setQos(1);
+                    mqttClient.publish(mqttTopicToClient, mqttResponseJson);
 
                     this.numResponses = 0;
                     this.searchResults = null;
@@ -179,7 +184,7 @@ public class PeerMachine extends UntypedActor {
                     String toWorkerJson = gson.toJson(toWorkerMsg);
 
                     // Send query request json to each worker
-                    for (var worker : workers){
+                    for (var worker : workers) {
                         worker.tell(toWorkerJson, getSelf());
                     }
                 }
