@@ -159,7 +159,7 @@ public class Worker extends UntypedActor {
     }
 
     // Mostly for testing. Prints values in the Results array.
-    public void printResult(){
+    public void printResult() {
         if (results != null) {
             this.results.forEach(row -> {
                 System.out.println(Arrays.toString(row));
