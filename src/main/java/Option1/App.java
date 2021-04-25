@@ -22,12 +22,14 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 public class App {
 
     // Enum for the types of messages there can be
+    // TODO: Rename them appropriately
     public enum type {
-        CL_2_PM,
-        PM_2_CL,
-        PM_2_W,
-        W_2_PM,
-        STOP
+        CL_2_PM,        // Client to Peer Machine - Query
+        PM_2_CL,        // Peer machine to Client - Results
+        PM2_2_W_CSV,    // Peer machine to worker - telling the csv file location
+        PM_2_W_Q,       // Peer machine to worker - sending a query
+        W_2_PM,         // Worker to peer machine - sending results
+        STOP            // Client to Peer Machine OR Peer Machine to Worker - terminate command
     }
 
     // int indices for the Strings arrays
@@ -48,7 +50,7 @@ public class App {
         pMachines = new ActorRef[NUM_PEER_MACHINES];
         for (int i = 1; i <= NUM_PEER_MACHINES; i++) {
             systems[i - 1] = ActorSystem.create("PMSystem" + i);
-            pMachines[i - 1] = systems[i-1].actorOf(Props.create(PeerMachine.class), "PeerMachine" + i);
+            pMachines[i - 1] = systems[i-1].actorOf(Props.create(PeerMachine.class), "PM" + i);
         }
 
         // 3. Listens for Messages from Client (how??)
