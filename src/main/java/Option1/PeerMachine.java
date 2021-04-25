@@ -32,6 +32,7 @@ import java.util.List;
 public class PeerMachine extends UntypedActor {
 
     private String name;
+    private int machineNumber;
     private ActorRef[] workers = new ActorRef[NUM_WORKERS];
     private final static int NUM_WORKERS = 4;
     private int numResponses = 0;
@@ -43,6 +44,7 @@ public class PeerMachine extends UntypedActor {
     public void preStart() throws IOException {
 
         name = getSelf().path().name();
+        machineNumber = Integer.parseInt(name.replaceAll("[^0-9]", ""));
         System.out.println("PeerMachine " + name + " created.");
 
         gson = new Gson();
@@ -77,7 +79,7 @@ public class PeerMachine extends UntypedActor {
             //String[] testQ = {"Harry", "Potter", null, null, null};
             String[] testQ = {null, "Potter", null, null, null};
             testMsg.row = testQ;
-            workers[i-1].tell(gson.toJson(testMsg), self());
+            workers[i - 1].tell(gson.toJson(testMsg), self());
         }
 
         // TODO: MQTT part
@@ -98,23 +100,18 @@ public class PeerMachine extends UntypedActor {
 
 
             // Response message from Worker to PeerMachine
-            if(msg.type == App.type.W_2_PM){
+            if (msg.type == App.type.W_2_PM) {
 
-                if(searchResults == null)
+                if (searchResults == null)
                     searchResults = new ArrayList<>();
                 searchResults.addAll(msg.results);
 
                 this.numResponses++;
 
                 // Received response from all workers.
-                if(this.numResponses == NUM_WORKERS){
+                if (this.numResponses == NUM_WORKERS) {
 
-                    System.out.println(this.name + "got response from all workers");
-
-                    this.searchResults.forEach(row -> {
-                        System.out.println(Arrays.toString(row));
-                    });
-                    System.out.println("===============");
+                    //System.out.println(this.name + " got response from all workers");
 
                     // Create response to send to Client
                     Message responseMsg = new Message();
