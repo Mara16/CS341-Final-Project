@@ -72,7 +72,7 @@ public class Client {
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
                 System.out.println("\nA message has arrived on Client Machine via MQTT" + "\nfrom topic: " + topic +
-                        "\nMessage: " + new String(mqttMessage.getPayload()));
+                        "\nMessage: " + new String(mqttMessage.getPayload()) + "\n");
 
                 // TODO - display message formatted, currently received as
                 //  {"type":"PM_2_CL","results":[["Harry","Potter","05180 Sparks Run Port Keith. MO 48921","58000","32","PM1_W3"] ,["Fleamont","Potter","575 Fuller Rapids Suite 993 East Michael. TX 38202","40000","26","PM1_W1"]]}
@@ -81,19 +81,20 @@ public class Client {
 
                 // determine which peer machine is replying
                 char machine = splitting[0].charAt(12);
-                System.out.println("Machine: " + machine + "reporting results: ");
+                System.out.println("Machine " + machine + " reporting results: ");
 
-                // output 
-                /*for (int i = 0; i < splitting.length; i++) {
-                    System.out.println("Splitted: " + splitting[i]);
-                }*/
+                // output result to user
+                String[] result = splitting[1].replaceAll("\"results\":\\[\\[", "").replaceAll("]]}", "").split("],\\[");
+                for (int i = 0; i < result.length; i++) {
+                    System.out.println( i+1 + ") " + result[i].replaceAll("\"", ""));
+                }
 
                 numberOfResponses++;
                 // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
                 if (numberOfResponses == 2) {
 
                     System.out.println("\nReceived responses from both Peer Machines. Ready for another query! :D" +
-                            "\n Any field is optional");
+                            "\nAny field is optional");
 
                     Scanner in = new Scanner(System.in);
                     String firstName = "", lastName = "", address = "", salary = "", age = "";
