@@ -28,7 +28,8 @@ public class Message {
     // search from Worker to PeerMachine and PeerMachine to Client.
     List<String[]> results;
 
-    public Message() {}
+    public Message() {
+    }
 
     public Message(App.type type, String msg, String[] row, List<String[]> results) {
         this.type = type;

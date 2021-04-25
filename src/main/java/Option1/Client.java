@@ -35,7 +35,7 @@ public class Client {
 
     private MqttClient mqttClient;
 
-    public Client(){
+    public Client() {
 
         try {
             createAndInitializeMQTT();
@@ -83,7 +83,7 @@ public class Client {
                 statement = in.next();
 
                 // TODO - edit row
-                String [] row = {statement, "", "", "", ""};
+                String[] row = {statement, "", "", "", ""};
                 Message msg = new Message(App.type.CL_2_PM, null, null, null);
                 gson = new Gson();
                 String toSend = gson.toJson(msg);

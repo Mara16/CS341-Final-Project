@@ -44,13 +44,13 @@ public class Worker extends UntypedActor {
     @Override
     public void onReceive(Object o) throws IOException {
 
-        if (o instanceof String){
+        if (o instanceof String) {
             String msgStr = (String) o;
             Message msg = gson.fromJson(msgStr, Message.class);
 
             // The message that worker recieved was the initial
             // message with CSV file path in it.
-            if(msg.type == App.type.PM2_2_W_CSV){
+            if (msg.type == App.type.PM2_2_W_CSV) {
 
                 // Set the CSV path, CSVReader, and list with data
                 this.pathToCSV = msg.msg;
@@ -63,7 +63,7 @@ public class Worker extends UntypedActor {
             }
 
             // TODO: The message that the worker receieved was a query
-            if(msg.type == App.type.PM_2_W_Q){
+            if (msg.type == App.type.PM_2_W_Q) {
                 prepResults(msg);
 
                 // TODO: TEST - REMOVE THIS PART
@@ -72,8 +72,7 @@ public class Worker extends UntypedActor {
                 });
                 System.out.println("===============");
             }
-        }
-        else {
+        } else {
             unhandled(o);     //received undefined msg
         }
     }
@@ -97,7 +96,7 @@ public class Worker extends UntypedActor {
 
         // Set values of queryHasTerms and firstIndex
         for (int i = 0; i < App.NUM_COLUMNS; i++) {
-            if(msg.row[i] != null) {
+            if (msg.row[i] != null) {
                 queryHasTerms[i] = true;
                 firstIndex = firstIndex == -1 ? i : firstIndex;
             }
@@ -106,14 +105,14 @@ public class Worker extends UntypedActor {
         // Find rows from the CSV that matches the first term
         // in search query.
         results = new ArrayList<>();
-        for(String[] row : csvData){
+        for (String[] row : csvData) {
 
             // If firstIndex is either salary or age
-            if(firstIndex >= App.SALARY){
+            if (firstIndex >= App.SALARY) {
                 if (row[firstIndex].equals(msg.row[firstIndex]))
                     results.add(row);
-            } else if(row[firstIndex].toLowerCase().contains(
-                    msg.row[firstIndex].toLowerCase())){
+            } else if (row[firstIndex].toLowerCase().contains(
+                    msg.row[firstIndex].toLowerCase())) {
                 results.add(row);
             }
         }
@@ -121,16 +120,16 @@ public class Worker extends UntypedActor {
         // Remove the rows that don't match the other query terms.
         for (int i = firstIndex + 1; i < App.NUM_COLUMNS; i++) {
 
-            for(String[] tempRow : results){
-                if(queryHasTerms[i]) {
+            for (String[] tempRow : results) {
+                if (queryHasTerms[i]) {
                     if (i >= App.SALARY) {
                         // For salary and age, remove rows that
                         // aren't EXACT matches.
-                        if(!tempRow[i].equals(msg.row[i])) {
+                        if (!tempRow[i].equals(msg.row[i])) {
                             results.remove(tempRow);
                         }
 
-                    } else if(!tempRow[i].toLowerCase().contains(
+                    } else if (!tempRow[i].toLowerCase().contains(
                             msg.row[i].toLowerCase())) {
                         results.remove(tempRow);
                     }

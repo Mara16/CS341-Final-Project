@@ -26,33 +26,33 @@ public class Test {
         boolean[] vals = new boolean[5];    // false by default
 
         for (int i = 0; i < queryValues.length; i++) {
-            if(queryValues[i] != null)
+            if (queryValues[i] != null)
                 vals[i] = true;
         }
 
         int firstIndex = -1;
         List<String[]> personList = new ArrayList();
         for (int i = 0; i < vals.length; i++) {
-            if(vals[i]){
+            if (vals[i]) {
                 firstIndex = i;
             }
         }
 
         // go through csv and find all with index firstIndex value matching that value
-        String fileName = "./src/main/Option1/PM1/PM1_File1" +".csv";
+        String fileName = "./src/main/Option1/PM1/PM1_File1" + ".csv";
         FileReader filereader = new FileReader(fileName);
         CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
         List<String[]> allData = csvReader.readAll();
 
         for (String[] row : allData) {
-            if(row[firstIndex].toLowerCase().contains(queryValues[firstIndex].toLowerCase())){
+            if (row[firstIndex].toLowerCase().contains(queryValues[firstIndex].toLowerCase())) {
                 personList.add(row);
             }
         }
 
-        for (int i = firstIndex+1; i < 5; i++) {
-            for(String[] row: personList){
-                if(vals[i] == true && !row[i].toLowerCase().contains(queryValues[i].toLowerCase())){
+        for (int i = firstIndex + 1; i < 5; i++) {
+            for (String[] row : personList) {
+                if (vals[i] == true && !row[i].toLowerCase().contains(queryValues[i].toLowerCase())) {
                     personList.remove(row);
                 }
             }

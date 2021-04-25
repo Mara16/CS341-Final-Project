@@ -52,7 +52,7 @@ public class App {
         pMachines = new ActorRef[NUM_PEER_MACHINES];
         for (int i = 1; i <= NUM_PEER_MACHINES; i++) {
             systems[i - 1] = ActorSystem.create("PMSystem" + i);
-            pMachines[i - 1] = systems[i-1].actorOf(Props.create(PeerMachine.class), "PM" + i);
+            pMachines[i - 1] = systems[i - 1].actorOf(Props.create(PeerMachine.class), "PM" + i);
         }
 
         // 3. Listens for Messages from Client (how??)
