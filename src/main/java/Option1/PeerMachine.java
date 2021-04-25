@@ -52,8 +52,7 @@ public class PeerMachine extends UntypedActor {
             workers[i - 1] = getContext().actorOf(Props.create(Worker.class),
                     name + "_W" + i);
 
-            // Update the path to reflect the CSV file
-            // for that worker
+            // Update the path to reflect the CSV file for that worker
             msg.msg = csvPathWithHashTag.replace("File#", "File" + i);
 
             // Convert the Message object to JSON
