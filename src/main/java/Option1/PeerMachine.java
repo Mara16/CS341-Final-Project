@@ -68,7 +68,7 @@ public class PeerMachine extends UntypedActor {
         for (int i = 1; i <= NUM_WORKERS; i++) {
 
             workers[i - 1] = getContext().actorOf(Props.create(Worker.class),
-                    name + "_W" + i);
+                    name + "_W" + i);     // create one worker
 
             // Update the path to reflect the CSV file for that worker
             initialMsgToWorkers.msg = csvPathWithHashTag.replace("File#", "File" + i);
@@ -79,7 +79,7 @@ public class PeerMachine extends UntypedActor {
             // Send JSON to worker
             workers[i - 1].tell(toSend, self());
 
-            // TODO: TEST - Remove this part
+            // TODO: TEST - Remove this part   ??
             Message testMsg = new Message();
             testMsg.type = App.type.PM_2_W_Q;
             // String[] testQ = {null, null, null, "30000", null};
