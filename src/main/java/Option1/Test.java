@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,7 +15,14 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 
-        // Test query
+        String[] row = {"arry", "potta", "address", "salary example", "age example"};
+        String[] rowWithWorkerName = new String[App.NUM_COLUMNS + 1];
+        rowWithWorkerName[App.NUM_COLUMNS] = "TESTNAME";
+        System.arraycopy(row, 0,
+                rowWithWorkerName, 0, App.NUM_COLUMNS);
+        System.out.println(Arrays.toString(rowWithWorkerName));
+
+        /*// Test query
         String fname_q = "Harry";
         // String lname_q = "Potter";
         String lname_q = null;
@@ -56,7 +64,7 @@ public class Test {
                     personList.remove(row);
                 }
             }
-        }
+        }*/
 
         // return personList.size();
     }
