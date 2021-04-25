@@ -19,55 +19,93 @@ package Option1;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import com.google.gson.Gson;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class PeerMachine extends UntypedActor {
 
-    //to print debugging messages
-    LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+    private String name;
+    private int numWorkers = 4;
+    private ActorRef[] workers = new ActorRef[numWorkers];
+
+    private Gson gson;
 
     @Override
-    public void preStart() throws IOException {          //what to do when this actor is created and started
+    public void preStart() throws IOException {
 
-        log.info("Starting Boss Actor");
+        name = getSelf().path().name();
+        System.out.println("PeerMachine " + name + " created.");
 
-        ActorRef worker =  getContext().actorOf(Props.create(Worker.class), "Worker");   //create one worker
+        gson = new Gson();
 
-        //Scanner scanner = new Scanner(System.in);
-        log.info("Enter a first name, last Name, address, salary, or age");
-        //String input = scanner.next();
+        String csvPathWithHashTag = getPathToCSVs();
+        Message msg = new Message();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String input = reader.readLine();
+        // Create workers
+        // Note: They go from 1 to 4, not 0 to 3.
+        for (int i = 1; i <= numWorkers; i++) {
 
-        log.info("You entered " + input);
+            workers[i - 1] = getContext().actorOf(Props.create(Worker.class),
+                    name + "_W" + i);
 
-        log.info("Boss is creating 4 workers to search a file each for \"" + input +"\"");
+            // Update the path to reflect the CSV file
+            // for that worker
+            msg.msg = csvPathWithHashTag.replace("File#", "File" + i);
+
+            // Convert the Message object to JSON
+            String toSend = gson.toJson(msg);
+
+            // Send JSON to worker
+            workers[i - 1].tell(toSend, self());
+
+        }
     }
 
     @Override
-    public void onReceive(Object msg) {    //what to do when a message is received
+    public void onReceive(Object msg) {
         if (msg instanceof String) {
 
-            log.info("Boss received message: " + msg.toString());  //print the identity of the sender
-
-            getSender().tell(("terminate"), getSelf());  //respond to the sender worker with another message
 
         } else {
 
             unhandled(msg);
-            //getContext().stop(getSelf());                               //stop the sender and with it the application
         }
     }
 
     @Override
     public void postStop() {                        //what to do when terminated
 
-        log.info("terminating the Boss actor");
+        System.out.println("Terminating worker");
+    }
+
+    // Get the absoltute path string for the folder holding
+    // the CSV files.
+    public String getPathToCSVs() {
+        // Name of the CSV file we're looking for
+        String filename = this.name + "_File1.csv";
+
+        // This array stores the relative path to the CSV files within the project
+        // folder. If the CSV files are placed elsewhere in the Project folder,
+        // change it accordingly.
+        String[] pathInProject = {"src", "main", "java", "Option1", this.name, filename};
+
+        // Path object that points to the CSV file.
+        Path path = Paths.get("", pathInProject);
+
+        // Exit the program if the file cannot be found at specified path.
+        if (!Files.exists(path)) {
+            System.err.println("File not found in specified project folder : " +
+                    path.toAbsolutePath() + "\n" +
+                    "Please modify the pathInProject[] array.");
+
+            System.exit(1);     // Exit Program
+        }
+
+        // Replace the name "File1" with "File#" so that it can be easily changed.
+        return path.toAbsolutePath().toString().replace("File1", "File#");
     }
 }
