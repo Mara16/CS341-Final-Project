@@ -70,7 +70,7 @@ public class Worker extends UntypedActor {
                 // send to Boss/PeerMachine.
                 Message responseMsg = new Message();
                 responseMsg.type = App.type.W_2_PM;
-                responseMsg.msg = this.name;
+                // responseMsg.msg = this.name;
                 responseMsg.results = this.results;
 
                 // Convert to JSON and send to Boss over Actor System
@@ -118,34 +118,43 @@ public class Worker extends UntypedActor {
         results = new ArrayList<>();
         for (String[] row : csvData) {
 
+            // Modified result rows which has the name of the worker as
+            // the last column.
+            String[] rowWithWorkerName = new String[App.NUM_COLUMNS + 1];
+            rowWithWorkerName[App.NUM_COLUMNS] = this.name;
+            System.arraycopy(row, 0,
+                    rowWithWorkerName, 0, App.NUM_COLUMNS);
+
             // If firstIndex is either salary or age
             if (firstIndex >= App.SALARY) {
                 if (row[firstIndex].equals(msg.row[firstIndex]))
-                    results.add(row);
+                    results.add(rowWithWorkerName);
             } else if (row[firstIndex].toLowerCase().contains(
                     msg.row[firstIndex].toLowerCase())) {
-                results.add(row);
+                results.add(rowWithWorkerName);
             }
         }
 
         // Remove the rows that don't match the other query terms.
         for (int i = firstIndex + 1; i < App.NUM_COLUMNS; i++) {
 
+            List<String[]> toRemove = new ArrayList<>();
             for (String[] tempRow : results) {
                 if (queryHasTerms[i]) {
                     if (i >= App.SALARY) {
                         // For salary and age, remove rows that
                         // aren't EXACT matches.
                         if (!tempRow[i].equals(msg.row[i])) {
-                            results.remove(tempRow);
+                            toRemove.add(tempRow);
                         }
 
                     } else if (!tempRow[i].toLowerCase().contains(
                             msg.row[i].toLowerCase())) {
-                        results.remove(tempRow);
+                        toRemove.add(tempRow);
                     }
                 }
             }
+            results.removeAll(toRemove);
         }
     }
 
