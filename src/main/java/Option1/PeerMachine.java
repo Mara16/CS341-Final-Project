@@ -45,6 +45,10 @@ public class PeerMachine extends UntypedActor {
         String csvPathWithHashTag = getPathToCSVs();
         Message msg = new Message();
 
+        // Set the type of message sent to worker as
+        // "message with CSV path".
+        msg.type = App.type.PM2_2_W_CSV;
+
         // Create workers
         // Note: They go from 1 to 4, not 0 to 3.
         for (int i = 1; i <= numWorkers; i++) {
@@ -60,7 +64,6 @@ public class PeerMachine extends UntypedActor {
 
             // Send JSON to worker
             workers[i - 1].tell(toSend, self());
-
         }
     }
 
