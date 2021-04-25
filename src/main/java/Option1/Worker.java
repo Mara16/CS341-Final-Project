@@ -62,19 +62,30 @@ public class Worker extends UntypedActor {
                 this.csvData = csvReader.readAll();
             }
 
-            // TODO: The message that the worker receieved was a query
+            // The message that the worker receieved was a search query.
             if (msg.type == App.type.PM_2_W_Q) {
                 prepResults(msg);
 
-                // TODO: TEST - REMOVE THIS PART
-                this.results.forEach(row -> {
-                    System.out.println(Arrays.toString(row));
-                });
-                System.out.println("===============");
+                // Response message with result to
+                // send to Boss/PeerMachine.
+                Message responseMsg = new Message();
+                responseMsg.type = App.type.W_2_PM;
+                responseMsg.msg = this.name;
+                responseMsg.results = this.results;
+
+                // Convert to JSON and send to Boss over Actor System
+                String responseJsonStr = gson.toJson(responseMsg);
+                getSender().tell(responseJsonStr, getSelf());
+
             }
         } else {
             unhandled(o);     //received undefined msg
         }
+    }
+
+    @Override
+    public void postStop() {
+        System.out.println("Terminating Worker " + name);
     }
 
     // Given a Message object containing a query, search for
@@ -138,8 +149,13 @@ public class Worker extends UntypedActor {
         }
     }
 
-    @Override
-    public void postStop() {
-        System.out.println("Terminating Worker " + name);
+    // Mostly for testing. Prints values in the Results array.
+    public void printResult(){
+        if (results != null) {
+            this.results.forEach(row -> {
+                System.out.println(Arrays.toString(row));
+            });
+            System.out.println("===============");
+        }
     }
 }
