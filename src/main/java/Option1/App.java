@@ -40,7 +40,7 @@ public class App {
     public final static int NUM_PEER_MACHINES = 2;
     public final static String MQTT_BROKER = "tcp://broker.hivemq.com:1883";
 
-    static ActorSystem[] systems;  // TODO ??
+    static ActorSystem[] systems;
     static ActorRef[] pMachines;
 
     public static void main(String[] args) {
