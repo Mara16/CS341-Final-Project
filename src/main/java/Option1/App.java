@@ -46,6 +46,7 @@ public class App {
     public static void main(String[] args) {
 
         // 1. Creates a Client object and Launches GUI through it.
+        Client client = new Client();
 
         // 2. Creates and Launches two Peer Machines, each with its own ActorSystem to communicate with their workers.
         systems = new ActorSystem[NUM_PEER_MACHINES];
