@@ -65,6 +65,13 @@ public class PeerMachine extends UntypedActor {
             // Send JSON to worker
             workers[i - 1].tell(toSend, self());
         }
+
+        // TODO: TEST - Remove this part
+        Message testMsg = new Message();
+        testMsg.type = App.type.PM_2_W_Q;
+        String[] testQ = {null, null, null, "30000", null};
+        testMsg.row = testQ;
+        workers[2].tell(gson.toJson(testMsg), self());
     }
 
     @Override
