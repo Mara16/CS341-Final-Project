@@ -84,7 +84,7 @@ public class Client {
 
                 // TODO - edit row
                 String[] row = {statement, "", "", "", ""};
-                Message msg = new Message(App.type.CL_2_PM, null, null, null);
+                Message msg = new Message(App.type.CL_2_PM, null, row, null);
                 gson = new Gson();
                 String toSend = gson.toJson(msg);
 
