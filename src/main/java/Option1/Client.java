@@ -74,20 +74,48 @@ public class Client {
                 System.out.println("\nA message has arrived on Client Machine via MQTT" + "\nfrom topic: " + topic +
                         "\nMessage: " + new String(mqttMessage.getPayload()));
 
-                // TODO - wait for 2 peer machine replies before new search
+                // TODO - display message formatted, currently received as
+                //  {"type":"PM_2_CL","results":[["Harry","Potter","05180 Sparks Run Port Keith. MO 48921","58000","32","PM1_W3"] ,["Fleamont","Potter","575 Fuller Rapids Suite 993 East Michael. TX 38202","40000","26","PM1_W1"]]}
+                String s = new String(mqttMessage.getPayload());
+                String splitting[] = s.split(",",2); // comma will be matched 1 times
+
+                // determine which peer machine is replying
+                char machine = splitting[0].charAt(12);
+                System.out.println("Machine: " + machine + "reporting results: ");
+
+                // output 
+                /*for (int i = 0; i < splitting.length; i++) {
+                    System.out.println("Splitted: " + splitting[i]);
+                }*/
 
                 numberOfResponses++;
                 // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
                 if (numberOfResponses == 2) {
 
-                    System.out.println("\nReceived responses from both Peer Machines. Ready for another query! :D");
-                    System.out.println("\nEnter a first name: ");
-                    String firstName = "";
+                    System.out.println("\nReceived responses from both Peer Machines. Ready for another query! :D" +
+                            "\n Any field is optional");
+
                     Scanner in = new Scanner(System.in);
-                    firstName = in.next();
+                    String firstName = "", lastName = "", address = "", salary = "", age = "";
+
+                    // TODO -- how to let it skip entering input for a value
+                    System.out.println("\nEnter a first name: ");
+                    firstName = in.nextLine();
+
+                    System.out.println("\nEnter a last name: ");
+                    lastName = in.nextLine();
+
+                    System.out.println("\nEnter an address name: ");
+                    address = in.nextLine();
+
+                    System.out.println("\nEnter a salary name: ");
+                    salary = in.nextLine();
+
+                    System.out.println("\nEnter their age: ");
+                    age = in.nextLine();
 
                     // TODO - edit row
-                    String[] row = {firstName, "", "", "", ""};
+                    String[] row = {firstName, lastName, address, salary, age};
                     Message msg = new Message(App.type.CL_2_PM, null, row, null);
                     gson = new Gson();
                     String toSend = gson.toJson(msg);
