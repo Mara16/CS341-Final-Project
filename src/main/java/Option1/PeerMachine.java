@@ -25,12 +25,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PeerMachine extends UntypedActor {
 
     private String name;
-    private int numWorkers = 4;
-    private ActorRef[] workers = new ActorRef[numWorkers];
+    private ActorRef[] workers = new ActorRef[NUM_WORKERS];
+    private final static int NUM_WORKERS = 4;
+    private int numResponses = 0;
+    private List<String[]> searchResults;
 
     private Gson gson;
 
@@ -51,7 +56,7 @@ public class PeerMachine extends UntypedActor {
 
         // Create workers
         // Note: They go from 1 to 4, not 0 to 3.
-        for (int i = 1; i <= numWorkers; i++) {
+        for (int i = 1; i <= NUM_WORKERS; i++) {
 
             workers[i - 1] = getContext().actorOf(Props.create(Worker.class),
                     name + "_W" + i);
@@ -64,24 +69,69 @@ public class PeerMachine extends UntypedActor {
 
             // Send JSON to worker
             workers[i - 1].tell(toSend, self());
+
+            // TODO: TEST - Remove this part
+            Message testMsg = new Message();
+            testMsg.type = App.type.PM_2_W_Q;
+            // String[] testQ = {null, null, null, "30000", null};
+            //String[] testQ = {"Harry", "Potter", null, null, null};
+            String[] testQ = {null, "Potter", null, null, null};
+            testMsg.row = testQ;
+            workers[i-1].tell(gson.toJson(testMsg), self());
         }
 
-        // TODO: TEST - Remove this part
-        Message testMsg = new Message();
-        testMsg.type = App.type.PM_2_W_Q;
-        String[] testQ = {null, null, null, "30000", null};
-        testMsg.row = testQ;
-        workers[2].tell(gson.toJson(testMsg), self());
+        // TODO: MQTT part
+        /*// Message that PM_n receives from Client Program
+        if(msg.type == App.type.CL_2_PM){
+
+        }*/
+
+
     }
 
     @Override
-    public void onReceive(Object msg) {
-        if (msg instanceof String) {
+    public void onReceive(Object o) {
+        if (o instanceof String) {
 
+            String msgStr = (String) o;
+            Message msg = gson.fromJson(msgStr, Message.class);
+
+
+            // Response message from Worker to PeerMachine
+            if(msg.type == App.type.W_2_PM){
+
+                if(searchResults == null)
+                    searchResults = new ArrayList<>();
+                searchResults.addAll(msg.results);
+
+                this.numResponses++;
+
+                // Received response from all workers.
+                if(this.numResponses == NUM_WORKERS){
+
+                    System.out.println(this.name + "got response from all workers");
+
+                    this.searchResults.forEach(row -> {
+                        System.out.println(Arrays.toString(row));
+                    });
+                    System.out.println("===============");
+
+                    // Create response to send to Client
+                    Message responseMsg = new Message();
+                    responseMsg.type = App.type.PM_2_CL;
+                    responseMsg.results = this.searchResults;
+                    String responseJson = gson.toJson(responseMsg);
+
+                    // TODO : Send response JSON to Client over MQTT
+
+                    this.numResponses = 0;
+                    this.searchResults = null;
+                }
+            }
 
         } else {
 
-            unhandled(msg);
+            unhandled(o);
         }
     }
 
