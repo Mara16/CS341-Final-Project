@@ -22,6 +22,8 @@ public class Test {
                 rowWithWorkerName, 0, App.NUM_COLUMNS);
         System.out.println(Arrays.toString(rowWithWorkerName));
 
+        String t = "abcdef";
+        System.out.println((t).substring(t.length() - 1));
         /*// Test query
         String fname_q = "Harry";
         // String lname_q = "Potter";
