@@ -1,10 +1,9 @@
 /*
  * The main App class for the Final project.
  *
- * 1. Creates a Client object and Launches GUI through it.
+ * 1. Creates a Client object.
  * 2. Creates and Launches two Peer Machines, each with its own ActorSystem to communicate with their workers.
- * 3. Listens for Messages from Client (how??)
- * 4. Listens for Messages from Peer machines (over MQTT)
+ * 3. Gets initial search query from client to get the system running.
  *
  * CS342: Parallel Computing & Distributed Systems - Final Project
  * Team: Obsmara Ulloa + Sebin Puthenthara Suresh
@@ -22,7 +21,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 public class App {
 
     // Enum for the types of messages there can be
-    // TODO: Rename them appropriately
     public enum type {
         CL_2_PM,        // Client to Peer Machine - Query
         PM_2_CL,        // Peer machine to Client - Results
@@ -34,6 +32,7 @@ public class App {
 
     // int indices for the Strings arrays
     public static final int FNAME = 0, LNAME = 1, ADDRESS = 2, SALARY = 3, AGE = 4;
+
     // Number of columns in dataset.
     public static final int NUM_COLUMNS = 5;
 
@@ -56,11 +55,8 @@ public class App {
             pMachines[i - 1] = systems[i - 1].actorOf(Props.create(PeerMachine.class), "PM" + i);
         }
 
+        // 3. Gets initial search query from client to get the system running.
         client.userInput();
-
-        // 3. Listens for Messages from Client (how??)
-
-        // 4. Listens for Messages from Peer machines (over MQTT)
     }
 
     // Handles an MQTTExcpetion by printing the Exception details
