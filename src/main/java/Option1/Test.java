@@ -15,15 +15,47 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 
-        String[] row = {"arry", "potta", "address", "salary example", "age example"};
+        String[] row = {"arry", "potta", "address address address address address address address address address " +
+                "address ", "salary example", "age example"};
         String[] rowWithWorkerName = new String[App.NUM_COLUMNS + 1];
-        rowWithWorkerName[App.NUM_COLUMNS] = "TESTNAME";
+        rowWithWorkerName[App.NUM_COLUMNS] = "PM1_M3";
         System.arraycopy(row, 0,
                 rowWithWorkerName, 0, App.NUM_COLUMNS);
         System.out.println(Arrays.toString(rowWithWorkerName));
+        System.out.println();
+        String[] r = {"First Name", "Last Name", "Address", "Salary", "Age", "Worker"};
 
-        String t = "abcdef";
-        System.out.println((t).substring(t.length() - 1));
+        int[] spacesReserved = {16, 20, 50, 6, 2, 6};
+        // Total width = 2 + 16 + 3 + 20 + 3 + 50 + 3 + 6 + 3 +  2 + 3 + 6 + 2 = 119
+        // stars and stuff at center = 23
+        // 119 - 23 -2 = 94
+        // 47 chars on each side
+
+        String test_ = "╔═══ -ˋˏ *.·:·.⟐.·:·.* ˎˊ- ═══╗\n" +
+                "╚═══ -ˋˏ *.·:·.⟐.·:·.* ˎˊ- ═══╝";
+        String dpipe = "║";
+
+        // printing outer line
+        System.out.printf(String.format("╔%047d -ˋˏ *.·:·.⟐.·:·.* ˎˊ- %047d╗\n", 0, 0).replace("0","═"));
+
+        //-----------vv Print one row vv-------------
+        System.out.print("║");
+        for (int i = 0; i < App.NUM_COLUMNS + 1; i++) {
+            int maxW = r[i].length();
+            if (maxW > spacesReserved[i])
+                maxW = spacesReserved[i];
+            System.out.printf(" %-" + spacesReserved[i] + "s ║", r[i].substring(0, maxW));
+        }
+        System.out.println();
+        //-----------^^ Print one row ^^-------------
+
+
+        // System.out.printf(String.format("+%46s\n", "+").replace(" ","-"));
+        // System.out.printf("| %-20s | %-20s |\n", row[0], row[1]);
+
+
+        /*String t = "abcdef";
+        System.out.println((t).substring(t.length() - 1));*/
         /*// Test query
         String fname_q = "Harry";
         // String lname_q = "Potter";
