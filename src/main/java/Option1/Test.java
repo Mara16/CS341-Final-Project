@@ -25,18 +25,18 @@ public class Test {
         System.out.println();
         String[] r = {"First Name", "Last Name", "Address", "Salary", "Age", "Worker"};
 
-        int[] spacesReserved = {16, 20, 50, 6, 2, 6};
-        // Total width = 2 + 16 + 3 + 20 + 3 + 50 + 3 + 6 + 3 +  2 + 3 + 6 + 2 = 119
+        int[] spacesReserved = {15, 20, 50, 6, 3, 6};
+        // Total width = 2 + 15 + 3 + 20 + 3 + 50 + 3 + 6 + 3 +  3 + 3 + 6 + 2 = 119
         // stars and stuff at center = 23
         // 119 - 23 -2 = 94
         // 47 chars on each side
 
-        String test_ = "╔═══ -ˋˏ *.·:·.⟐.·:·.* ˎˊ- ═══╗\n" +
-                "╚═══ -ˋˏ *.·:·.⟐.·:·.* ˎˊ- ═══╝";
+        String test_ = "╔═══ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ═══╗\n" +
+                "╚═══ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ═══╝";
         String dpipe = "║";
 
         // printing outer line
-        System.out.printf(String.format("╔%047d -ˋˏ *.·:·.⟐.·:·.* ˎˊ- %047d╗\n", 0, 0).replace("0","═"));
+        System.out.printf(String.format("╔%047d -ˋˏ *.·:·.◆.·:·.* ˎˊ- %047d╗\n", 0, 0).replace("0","═"));
 
         //-----------vv Print one row vv-------------
         System.out.print("║");
@@ -49,6 +49,31 @@ public class Test {
         System.out.println();
         //-----------^^ Print one row ^^-------------
 
+        System.out.printf(String.format("╚%047d -ˋˏ *.·:·.◆.·:·.* ˎˊ- %047d╝\n", 0, 0).replace("0","═"));
+
+        /*
+        What it could look like:
+
+        With thingies:
+        ╔══════════════════╦══════════════════════╦═════ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ════════════════════════╦════════╦════╦════════╗
+        ║ First Name       ║ Last Name            ║ Address                                            ║ Salary ║ Ag ║ Worker ║
+        ╠══════════════════╬══════════════════════╬════════════════════════════════════════════════════╬════════╬════╬════════╣
+        ║ Sebin            ║ Suresh               ║  1231 America lane, US                             ║ 100000 ║    ║        ║
+        ║ Obusmara         ║ Ulloa                ║                                                    ║        ║    ║        ║
+        ║ Ahmed            ║ Khaled               ║                                                    ║        ║    ║        ║
+        ╚══════════════════╩══════════════════════╩═════ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ════════════════════════╩════════╩════╩════════╝
+
+        Without thingies:
+        ╔══════════════════╦══════════════════════╦════════════════════════════════════════════════════╦════════╦════╦════════╗
+        ║ First Name       ║ Last Name            ║ Address                                            ║ Salary ║ Ag ║ Worker ║
+        ╠══════════════════╬══════════════════════╬════════════════════════════════════════════════════╬════════╬════╬════════╣
+        ║ Sebin            ║ Suresh               ║  1231 America lane, US                             ║ 100000 ║    ║        ║
+        ║ Obusmara         ║ Ulloa                ║                                                    ║        ║    ║        ║
+        ║ Ahmed            ║ Khaled               ║                                                    ║        ║    ║        ║
+        ╚══════════════════╩══════════════════════╩════════════════════════════════════════════════════╩════════╩════╩════════╝
+
+
+        */
 
         // System.out.printf(String.format("+%46s\n", "+").replace(" ","-"));
         // System.out.printf("| %-20s | %-20s |\n", row[0], row[1]);
