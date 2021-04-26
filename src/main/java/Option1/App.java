@@ -43,7 +43,7 @@ public class App {
     static ActorSystem[] systems;
     static ActorRef[] pMachines;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MqttException {
 
         // 1. Creates a Client object and Launches GUI through it.
         Client client = new Client();
@@ -55,6 +55,8 @@ public class App {
             systems[i - 1] = ActorSystem.create("PMSystem" + i);
             pMachines[i - 1] = systems[i - 1].actorOf(Props.create(PeerMachine.class), "PM" + i);
         }
+
+        client.userInput();
 
         // 3. Listens for Messages from Client (how??)
 

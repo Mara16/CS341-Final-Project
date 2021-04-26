@@ -24,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Scanner;
 
 public class Client {
@@ -76,55 +77,29 @@ public class Client {
 
                 // TODO - display message formatted, currently received as
                 //  {"type":"PM_2_CL","results":[["Harry","Potter","05180 Sparks Run Port Keith. MO 48921","58000","32","PM1_W3"] ,["Fleamont","Potter","575 Fuller Rapids Suite 993 East Michael. TX 38202","40000","26","PM1_W1"]]}
-                String s = new String(mqttMessage.getPayload());
-                String splitting[] = s.split(",",2); // comma will be matched 1 times
+                String msgJson = new String(mqttMessage.getPayload());
+                Message msgFromPM = gson.fromJson(msgJson, Message.class);
 
                 // determine which peer machine is replying
-                char machine = splitting[0].charAt(12);
-                System.out.println("Machine " + machine + " reporting results: ");
+                String repliedMachineName = msgFromPM.msg;
+                System.out.println(repliedMachineName + " reporting results: ");
 
                 // output result to user
-                String[] result = splitting[1].replaceAll("\"results\":\\[\\[", "").replaceAll("]]}", "").split("],\\[");
-                for (int i = 0; i < result.length; i++) {
-                    System.out.println( i+1 + ") " + result[i].replaceAll("\"", ""));
-                }
+                List<String[]> result = msgFromPM.results;
+
+                result.forEach(strings -> {
+                    System.out.print("Result: ");
+                    for (int i = 0; i < strings.length; i++) {
+                        System.out.print(strings[i] + " ");
+
+                    }
+                    System.out.println("\n");
+                });
 
                 numberOfResponses++;
                 // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
                 if (numberOfResponses == 2) {
-
-                    System.out.println("\nReceived responses from both Peer Machines. Ready for another query! :D" +
-                            "\nAny field is optional");
-
-                    Scanner in = new Scanner(System.in);
-                    String firstName = "", lastName = "", address = "", salary = "", age = "";
-
-                    // TODO -- how to let it skip entering input for a value
-                    System.out.println("\nEnter a first name: ");
-                    firstName = in.nextLine();
-
-                    System.out.println("\nEnter a last name: ");
-                    lastName = in.nextLine();
-
-                    System.out.println("\nEnter an address name: ");
-                    address = in.nextLine();
-
-                    System.out.println("\nEnter a salary name: ");
-                    salary = in.nextLine();
-
-                    System.out.println("\nEnter their age: ");
-                    age = in.nextLine();
-
-                    // TODO - edit row
-                    String[] row = {firstName, lastName, address, salary, age};
-                    Message msg = new Message(App.type.CL_2_PM, null, row, null);
-                    gson = new Gson();
-                    String toSend = gson.toJson(msg);
-
-                    // publish to both peer machines
-                    mqttMessage = new MqttMessage(toSend.getBytes());
-                    mqttMessage.setQos(1);
-                    mqttClient.publish("/CS341FinalProj/Team2/FromClient", mqttMessage);
+                    userInput();
                 }
             }
 
@@ -138,5 +113,42 @@ public class Client {
                 System.out.println("Client machine delivered message to Broker.");
             }
         });
+    }
+
+    void userInput() throws MqttException {
+        MqttMessage mqttMessage;
+        System.out.println("\nReady for a query! ʕ•́ᴥ•̀ʔっ♡" +
+                "\nAny field is optional (hit enter to skip");
+
+        Scanner in = new Scanner(System.in);
+        String firstName = "", lastName = "", address = "", salary = "", age = "";
+
+        // TODO -- how to let it skip entering input for a value
+        System.out.println("\nEnter a first name: ");
+        firstName = in.nextLine();
+
+        System.out.println("\nEnter a last name: ");
+        lastName = in.nextLine();
+
+        System.out.println("\nEnter an address name: ");
+        address = in.nextLine();
+
+        System.out.println("\nEnter a salary: ");
+        salary = in.nextLine();
+
+        System.out.println("\nEnter their age: ");
+        age = in.nextLine();
+
+        // TODO - edit row
+        String[] row = {firstName, lastName, address, salary, age};
+        Message msg = new Message(App.type.CL_2_PM, null, row, null);
+        gson = new Gson();
+        String toSend = gson.toJson(msg);
+
+        // publish to both peer machines
+        mqttMessage = new MqttMessage(toSend.getBytes());
+        mqttMessage.setQos(1);
+        mqttClient.publish("/CS341FinalProj/Team2/FromClient", mqttMessage);
+        numberOfResponses = 0;
     }
 }

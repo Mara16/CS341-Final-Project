@@ -106,7 +106,7 @@ public class Worker extends UntypedActor {
 
         // Set values of queryHasTerms and firstIndex
         for (int i = 0; i < App.NUM_COLUMNS; i++) {
-            if (msg.row[i] != null) {
+            if (msg.row[i] != null && !msg.row[i].trim().equals("")) {
                 queryHasTerms[i] = true;
                 firstIndex = firstIndex == -1 ? i : firstIndex;
             }
