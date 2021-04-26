@@ -78,15 +78,6 @@ public class PeerMachine extends UntypedActor {
 
             // Send JSON to worker
             workers[i - 1].tell(toSend, self());
-
-            // TODO: TEST - Remove this part   ??
-            /*Message testMsg = new Message();
-            testMsg.type = App.type.PM_2_W_Q;
-            // String[] testQ = {null, null, null, "30000", null};
-            //String[] testQ = {"Harry", "Potter", null, null, null};
-            String[] testQ = {null, "Potter", null, null, null};
-            testMsg.row = testQ;
-            workers[i - 1].tell(gson.toJson(testMsg), self());*/
         }
 
         initializeMQTTStuff();
@@ -113,7 +104,7 @@ public class PeerMachine extends UntypedActor {
                 // Received response from all workers.
                 if (this.numResponses == NUM_WORKERS) {
 
-                    System.out.println(this.name + " got response from all workers");
+                    // System.out.println(this.name + " got response from all workers");
 
                     // Create response to send to Client
                     Message responseMsg = new Message();
@@ -167,8 +158,8 @@ public class PeerMachine extends UntypedActor {
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
 
-                System.out.println("Message has arrived on PeerMachne via MQTT." + "\n" + topic +
-                        "\n\tMessage: " + new String(mqttMessage.getPayload()));
+                // System.out.println("Message has arrived on PeerMachne via MQTT." + "\n" + topic +
+                //         "\n\tMessage: " + new String(mqttMessage.getPayload()));
 
                 String msgStr = new String(mqttMessage.getPayload());
                 Message clientMsg = gson.fromJson(msgStr, Message.class);
