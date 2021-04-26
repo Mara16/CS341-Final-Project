@@ -38,7 +38,7 @@ public class Worker extends UntypedActor {
         name = getSelf().path().name();
         gson = new Gson();
 
-        System.out.println("Starting Worker: " + name);
+        // System.out.println("Starting Worker: " + name);
     }
 
     @Override
