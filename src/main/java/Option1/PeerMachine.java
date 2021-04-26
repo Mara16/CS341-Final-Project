@@ -80,13 +80,13 @@ public class PeerMachine extends UntypedActor {
             workers[i - 1].tell(toSend, self());
 
             // TODO: TEST - Remove this part   ??
-            Message testMsg = new Message();
+            /*Message testMsg = new Message();
             testMsg.type = App.type.PM_2_W_Q;
             // String[] testQ = {null, null, null, "30000", null};
             //String[] testQ = {"Harry", "Potter", null, null, null};
             String[] testQ = {null, "Potter", null, null, null};
             testMsg.row = testQ;
-            workers[i - 1].tell(gson.toJson(testMsg), self());
+            workers[i - 1].tell(gson.toJson(testMsg), self());*/
         }
 
         initializeMQTTStuff();
@@ -100,7 +100,6 @@ public class PeerMachine extends UntypedActor {
 
             String msgStr = (String) o;
             Message msg = gson.fromJson(msgStr, Message.class);
-
 
             // Response message from Worker to PeerMachine
             if (msg.type == App.type.W_2_PM) {
@@ -119,6 +118,7 @@ public class PeerMachine extends UntypedActor {
                     // Create response to send to Client
                     Message responseMsg = new Message();
                     responseMsg.type = App.type.PM_2_CL;
+                    responseMsg.msg = this.name;
                     responseMsg.results = this.searchResults;
                     String responseJson = gson.toJson(responseMsg);
 
@@ -131,7 +131,6 @@ public class PeerMachine extends UntypedActor {
                     this.searchResults = null;
                 }
             }
-
         } else {
 
             unhandled(o);
