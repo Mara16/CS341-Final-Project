@@ -82,7 +82,7 @@ public class PeerMachine extends UntypedActor {
 
         initializeMQTTStuff();
 
-        System.out.println("PeerMachine " + name + " created.");
+        // System.out.println("PeerMachine " + name + " created.");
     }
 
     @Override
@@ -123,7 +123,6 @@ public class PeerMachine extends UntypedActor {
                 }
             }
         } else {
-
             unhandled(o);
         }
     }
@@ -134,8 +133,7 @@ public class PeerMachine extends UntypedActor {
         System.out.println("Terminating worker");
     }
 
-    // Method to create and initialize the MQTT Client that represents
-    // this Peer machine.
+    // Method to create and initialize the MQTT Client that represents this Peer machine.
     private void initializeMQTTStuff() throws MqttException {
         // Construct the MQTT Client
         this.mqttClient = new MqttClient(
@@ -147,7 +145,7 @@ public class PeerMachine extends UntypedActor {
 
         // Connecting to the broker
         this.mqttClient.connect(connOpts);
-        System.out.println(this.name + " connected to broker: " + App.MQTT_BROKER);
+        // System.out.println(this.name + " connected to broker: " + App.MQTT_BROKER);
 
         // Subscribing to topic - QoS 1
         mqttClient.subscribe("/CS341FinalProj/Team2/FromClient", 1);
@@ -178,7 +176,6 @@ public class PeerMachine extends UntypedActor {
                         worker.tell(toWorkerJson, getSelf());
                     }
                 }
-
             }
 
             @Override

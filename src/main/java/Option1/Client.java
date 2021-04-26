@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Client {
-
     // MQTT Client ID for the class
     final static String CLIENT_ID = "Team2_ClientMachine";
     private Gson gson;
+    String fancyDivider = "✼ •• ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ •• ✼";
+    String nonFancyDivider = "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈";
 
     private int numberOfResponses = 0;
-
     private MqttClient mqttClient;
 
     public Client() {
@@ -45,7 +45,6 @@ public class Client {
         } catch (MqttException e) {
             App.handleMQTTException(e);
         }
-
     }
 
     // Method to create and initialize the MQTT Client that represents
@@ -83,6 +82,7 @@ public class Client {
                 // output result to user
                 List<String[]> result = msgFromPM.results;
 
+                System.out.println(nonFancyDivider);
                 result.forEach(strings -> {
                     System.out.print("| ");
                     for (int i = 0; i < strings.length; i++) {
@@ -118,13 +118,12 @@ public class Client {
     void userInput() throws MqttException {
         MqttMessage mqttMessage;
         System.out.println("\nReady for a query! ʕ•́ᴥ•̀ʔっ♡" +
-                "\nAny field is optional (hit enter to skip");
+                "\nAny field is optional (hit enter to skip)");
 
         Scanner in = new Scanner(System.in);
         String firstName = "", lastName = "", address = "", salary = "", age = "";
 
-        // TODO -- how to let it skip entering input for a value
-        System.out.println("\nEnter a first name: ");
+        System.out.print("\nEnter a first name: ");
         firstName = in.nextLine();
 
         System.out.print("Enter a last name: ");
@@ -139,7 +138,6 @@ public class Client {
         System.out.print("Enter their age: ");
         age = in.nextLine();
 
-        // TODO - edit row
         String[] row = {firstName, lastName, address, salary, age};
 
         boolean atLeastone = false;
