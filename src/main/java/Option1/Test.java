@@ -36,9 +36,17 @@ public class Test {
         String dpipe = "║";
 
         // printing outer line
-        System.out.printf(String.format("╔%047d -ˋˏ *.·:·.◆.·:·.* ˎˊ- %047d╗\n", 0, 0).replace("0","═"));
+        // System.out.printf(String.format("╔%047d -ˋˏ *.·:·.◆.·:·.* ˎˊ- %047d╗\n", 0, 0).replace("0","═"));
+        System.out.print("╔");
+        for (int i = 0; i < App.NUM_COLUMNS + 1; i++) {
+            int maxW = r[i].length();
+            if (maxW > spacesReserved[i])
+                maxW = spacesReserved[i];
+            System.out.print(String.format("═%0" + spacesReserved[i] + "d═╦", 0).replace("0","═"));
+        }
+        System.out.println();
 
-        //-----------vv Print one row vv-------------
+        //-----------vv Print headers vv-------------
         System.out.print("║");
         for (int i = 0; i < App.NUM_COLUMNS + 1; i++) {
             int maxW = r[i].length();
@@ -47,9 +55,39 @@ public class Test {
             System.out.printf(" %-" + spacesReserved[i] + "s ║", r[i].substring(0, maxW));
         }
         System.out.println();
-        //-----------^^ Print one row ^^-------------
+        //-----------^^ Print headers ^^-------------
 
-        System.out.printf(String.format("╚%047d -ˋˏ *.·:·.◆.·:·.* ˎˊ- %047d╝\n", 0, 0).replace("0","═"));
+        System.out.print("╠");
+        for (int i = 0; i < App.NUM_COLUMNS + 1; i++) {
+            int maxW = r[i].length();
+            if (maxW > spacesReserved[i])
+                maxW = spacesReserved[i];
+            System.out.print(String.format("═%0" + spacesReserved[i] + "d═╬", 0).replace("0","═"));
+        }
+        System.out.println();
+
+
+        //-------------------print data----------
+        System.out.print("║");
+        for (int i = 0; i < App.NUM_COLUMNS + 1; i++) {
+            int maxW = rowWithWorkerName[i].length();
+            if (maxW > spacesReserved[i])
+                maxW = spacesReserved[i];
+            System.out.printf(" %-" + spacesReserved[i] + "s ║", rowWithWorkerName[i].substring(0, maxW));
+        }
+        System.out.println();
+        //-------------------print data----------
+
+
+        // System.out.printf(String.format("╚%047d -ˋˏ *.·:·.◆.·:·.* ˎˊ- %047d╝\n", 0, 0).replace("0","═"));
+        System.out.print("╚");
+        for (int i = 0; i < App.NUM_COLUMNS + 1; i++) {
+            int maxW = r[i].length();
+            if (maxW > spacesReserved[i])
+                maxW = spacesReserved[i];
+            System.out.print(String.format("═%0" + spacesReserved[i] + "d═╩", 0).replace("0","═"));
+        }
+        System.out.println();
 
         /*
         What it could look like:
@@ -126,5 +164,20 @@ public class Test {
         }*/
 
         // return personList.size();
+    }
+
+    // Returns string that containts what to print for one row of a table.
+    // Example of row[]: {"arry", "potta", "address1 address2", "12000", "32"}
+    //      widths[]: {15, 20, 50, 6, 3, 6}
+    //      startSymbol: "╔"
+    //      midSymbol: "╦"
+    //      endSymbol: "╗"
+    // The widths arrays length will be used to determine how many columns there should be.
+    public static String printRow(String[] row, int[] widths,
+                                String startSymbol, String midSymbol,
+                                String endSymbol){
+        String toReturn = startSymbol;
+
+        return toReturn;
     }
 }
