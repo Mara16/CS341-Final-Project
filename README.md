@@ -44,3 +44,5 @@
 | :---            |    :----: |          ---:                         |     ---: | ---: |
 | Harry           | Potter    | 05180 Sparks Run Port Keith. MO 48921 | 58000    | 32   | 
 | Samantha        | Jones     |949 Cortez Path Santanafurt. NV 58500  | 41000    | 38   |
+
+![Design](Architecture.png)
