@@ -31,7 +31,7 @@ public class Client {
     // MQTT Client ID for the class
     final static String CLIENT_ID = "Team2_ClientMachine";
     private Gson gson;
-    String fancyDivider = "✼ •• ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ •• ✼";
+    String fancyDivider = "✼ •• ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ •• ✼";
     String nonFancyDivider = "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈";
 
     private int numberOfResponses = 0;
@@ -81,19 +81,7 @@ public class Client {
 
                 // output result to user
                 List<String[]> result = msgFromPM.results;
-
-                System.out.println(nonFancyDivider);
-                result.forEach(strings -> {
-                    System.out.print("| ");
-                    for (int i = 0; i < strings.length; i++) {
-                        System.out.print(strings[i] + " | ");
-
-                    }
-                    System.out.println();
-                });
-                if(result.size() == 0)
-                    System.out.println("No results found.");
-                System.out.println(nonFancyDivider);
+                printTable(result);
 
                 numberOfResponses++;
                 // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
@@ -189,8 +177,11 @@ public class Client {
         );
 
         // Print the line below headings
+        String midSymbol = "╬";
+        if(results.size() == 0)
+            midSymbol = "╩";
         System.out.println(
-                getRowFormatted(lines,spacesReserved,"╠", "╬", "╣", "═")
+                getRowFormatted(lines,spacesReserved,"╠", midSymbol, "╣", "═")
         );
 
         // Print the rows
@@ -203,13 +194,16 @@ public class Client {
         if(results.size() == 0){
             String noResStr = "No results found!";
             // 119 total width - noResStr.length() - 4
-            int sides = (119 - noResStr.length() - 4)/2;
+            int sides = (119 - noResStr.length() - 2)/2;
             System.out.println("║" + " ".repeat(sides) + noResStr + " ".repeat(sides) + "║");
         }
 
         // Print the bottom line
+        midSymbol = "╩";
+        if(results.size() == 0)
+            midSymbol = "═";
         System.out.println(
-                getRowFormatted(lines,spacesReserved,"╚", "╩", "╝", "═")
+                getRowFormatted(lines,spacesReserved,"╚", midSymbol, "╝", "═")
         );
 
     }
