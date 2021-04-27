@@ -166,4 +166,76 @@ public class Client {
         System.out.print(fancyDivider);
         System.out.println();
     }
+
+    // Method that prints the rows contained within the results List parameter.
+    // Note that the rows should have an extra column - the worker machine name.
+    public static void printTable(List<String[]> results){
+
+        String[] headings = {"First Name", "Last Name", "Address", "Salary", "Age", "Worker"};
+        int[] spacesReserved = {15, 20, 50, 6, 3, 6};
+        String[] lines = new String[headings.length];
+        for (int i = 0; i < headings.length; i++) {
+            lines[i] = "═".repeat(spacesReserved[i]);
+        }
+
+        // Print the top line
+        System.out.println(
+                getRowFormatted(lines,spacesReserved,"╔", "╦", "╗", "═")
+        );
+
+        // Print the headings
+        System.out.println(
+                getRowFormatted(headings,spacesReserved,"║", "║", "║", " ")
+        );
+
+        // Print the line below headings
+        System.out.println(
+                getRowFormatted(lines,spacesReserved,"╠", "╬", "╣", "═")
+        );
+
+        // Print the rows
+        for(String[] row: results){
+            System.out.println(
+                    getRowFormatted(row,spacesReserved,"║", "║", "║", " ")
+            );
+        }
+
+        // Print the bottom line
+        System.out.println(
+                getRowFormatted(lines,spacesReserved,"╚", "╩", "╝", "═")
+        );
+
+    }
+
+    // Returns string that containts what to print for one row of a table.
+    // Example of row[]: {"arry", "potta", "address1 address2", "12000", "32"}
+    //      widths[]: {15, 20, 50, 6, 3, 6}
+    //      startSymbol: "╔"
+    //      midSymbol: "╦"
+    //      endSymbol: "╗"
+    //      padSymbol: " "/"="
+    // The widths arrays length will be used to determine how many columns there should be.
+    public static String getRowFormatted(String[] row, int[] widths,
+                                         String startSymbol, String midSymbol,
+                                         String endSymbol, String padSymbol) {
+        String toReturn = startSymbol;
+        int nCols = widths.length;
+
+        for (int i = 0; i < nCols; i++) {
+
+            // Trim the value at this column to fit the table
+            int maxW = widths[i];
+            String col = row[i];
+            if (maxW < col.length())
+                col = col.substring(0, maxW);
+
+            String columnEndSymbol = midSymbol;
+            if (i == nCols - 1)
+                columnEndSymbol = endSymbol;
+
+            toReturn += String.format(padSymbol + "%-" + widths[i] + "s" + padSymbol + columnEndSymbol, col);
+        }
+
+        return toReturn;
+    }
 }
