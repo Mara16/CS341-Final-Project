@@ -23,7 +23,7 @@ public class Test {
                 rowWithWorkerName, 0, App.NUM_COLUMNS);
         System.out.println(Arrays.toString(rowWithWorkerName));
         System.out.println();
-        String[] r = {"First Name", "Last Name", "Address", "Salary", "Age", "Worker"};
+
 
         int[] spacesReserved = {15, 20, 50, 6, 3, 6};
         // Total width = 2 + 15 + 3 + 20 + 3 + 50 + 3 + 6 + 3 +  3 + 3 + 6 + 2 = 119
@@ -35,7 +35,116 @@ public class Test {
                 "╚═══ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ═══╝";
         String dpipe = "║";
 
-        // printing outer line
+        List<String[]> table = new ArrayList<>();
+        table.add(rowWithWorkerName);
+        table.add(new String[]{"Sebin", "Suresh", "1231 America lane, US", "100000", "19", "PM2_W1"});
+        table.add(new String[]{"OBS", "Ulloa", "1232 America lane, US", "100000", "Tay", "PM2_W3"});
+        table.add(new String[]{"Ahmed", "Khaled", "1233 America lane, US", "100000", "25", "PM1_W3"});
+        printTable(table);
+
+        System.out.println();
+        System.out.println(getRowFormatted(rowWithWorkerName, spacesReserved, "8", "|", "9", " "));
+
+        /*
+        What it could look like:
+
+        With thingies:
+╔══════════════════╦══════════════════════╦═════ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ════════════════════════╦════════╦════╦════════╗
+║ First Name       ║ Last Name            ║ Address                                            ║ Salary ║ Ag ║ Worker ║
+╠══════════════════╬══════════════════════╬════════════════════════════════════════════════════╬════════╬════╬════════╣
+║ Sebin            ║ Suresh               ║  1231 America lane, US                             ║ 100000 ║    ║        ║
+║ Obusmara         ║ Ulloa                ║                                                    ║        ║    ║        ║
+║ Ahmed            ║ Khaled               ║                                                    ║        ║    ║        ║
+╚══════════════════╩══════════════════════╩═════ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ════════════════════════╩════════╩════╩════════╝
+
+        Without thingies:
+╔══════════════════╦══════════════════════╦════════════════════════════════════════════════════╦════════╦════╦════════╗
+║ First Name       ║ Last Name            ║ Address                                            ║ Salary ║ Ag ║ Worker ║
+╠══════════════════╬══════════════════════╬════════════════════════════════════════════════════╬════════╬════╬════════╣
+║ Sebin            ║ Suresh               ║  1231 America lane, US                             ║ 100000 ║    ║        ║
+║ Obusmara         ║ Ulloa                ║                                                    ║        ║    ║        ║
+║ Ahmed            ║ Khaled               ║                                                    ║        ║    ║        ║
+╚══════════════════╩══════════════════════╩════════════════════════════════════════════════════╩════════╩════╩════════╝
+
+        */
+    }
+
+    // Method that prints the rows contained within the results List parameter.
+    // Note that the rows should have an extra column - the worker machine name.
+    public static void printTable(List<String[]> results){
+
+        String[] headings = {"First Name", "Last Name", "Address", "Salary", "Age", "Worker"};
+        int[] spacesReserved = {15, 20, 50, 6, 3, 6};
+        String[] lines = new String[headings.length];
+        for (int i = 0; i < headings.length; i++) {
+            lines[i] = "═".repeat(spacesReserved[i]);
+        }
+
+        // Print the top line
+        System.out.println(
+                getRowFormatted(lines,spacesReserved,"╔", "╦", "╗", "═")
+        );
+
+        // Print the headings
+        System.out.println(
+                getRowFormatted(headings,spacesReserved,"║", "║", "║", " ")
+        );
+
+        // Print the line below headings
+        System.out.println(
+                getRowFormatted(lines,spacesReserved,"╠", "╬", "╣", "═")
+        );
+
+        // Print the rows
+        for(String[] row: results){
+            System.out.println(
+                    getRowFormatted(row,spacesReserved,"║", "║", "║", " ")
+            );
+        }
+
+        // Print the bottom line
+        System.out.println(
+                getRowFormatted(lines,spacesReserved,"╚", "╩", "╝", "═")
+        );
+
+    }
+
+    // Returns string that containts what to print for one row of a table.
+    // Example of row[]: {"arry", "potta", "address1 address2", "12000", "32"}
+    //      widths[]: {15, 20, 50, 6, 3, 6}
+    //      startSymbol: "╔"
+    //      midSymbol: "╦"
+    //      endSymbol: "╗"
+    //      padSymbol: " "/"="
+    // The widths arrays length will be used to determine how many columns there should be.
+    public static String getRowFormatted(String[] row, int[] widths,
+                                         String startSymbol, String midSymbol,
+                                         String endSymbol, String padSymbol) {
+        String toReturn = startSymbol;
+        int nCols = widths.length;
+
+        for (int i = 0; i < nCols; i++) {
+
+            // Trim the value at this column to fit the table
+            int maxW = widths[i];
+            String col = row[i];
+            if (maxW < col.length())
+                col = col.substring(0, maxW);
+
+            String columnEndSymbol = midSymbol;
+            if (i == nCols - 1)
+                columnEndSymbol = endSymbol;
+
+            toReturn += String.format(padSymbol + "%-" + widths[i] + "s" + padSymbol + columnEndSymbol, col);
+        }
+
+        return toReturn;
+    }
+
+    // Moving old commented out code to clean up the main a bit
+    public static void oldMain(){
+
+        /*// printing outer line
         // System.out.printf(String.format("╔%047d -ˋˏ *.·:·.◆.·:·.* ˎˊ- %047d╗\n", 0, 0).replace("0","═"));
         System.out.print("╔");
         for (int i = 0; i < App.NUM_COLUMNS + 1; i++) {
@@ -86,70 +195,8 @@ public class Test {
                 maxW = spacesReserved[i];
             System.out.print(String.format("═%0" + spacesReserved[i] + "d═╩", 0).replace("0", "═"));
         }
+        System.out.println("\n\n");*/
 
-
-        System.out.println("\n\n");
-
-        System.out.println(getRowFormatted(rowWithWorkerName, spacesReserved, "8", "|", "9", " "));
-
-        /*
-        What it could look like:
-
-        With thingies:
-╔══════════════════╦══════════════════════╦═════ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ════════════════════════╦════════╦════╦════════╗
-║ First Name       ║ Last Name            ║ Address                                            ║ Salary ║ Ag ║ Worker ║
-╠══════════════════╬══════════════════════╬════════════════════════════════════════════════════╬════════╬════╬════════╣
-║ Sebin            ║ Suresh               ║  1231 America lane, US                             ║ 100000 ║    ║        ║
-║ Obusmara         ║ Ulloa                ║                                                    ║        ║    ║        ║
-║ Ahmed            ║ Khaled               ║                                                    ║        ║    ║        ║
-╚══════════════════╩══════════════════════╩═════ -ˋˏ *.·:·.◆.·:·.* ˎˊ- ════════════════════════╩════════╩════╩════════╝
-
-        Without thingies:
-╔══════════════════╦══════════════════════╦════════════════════════════════════════════════════╦════════╦════╦════════╗
-║ First Name       ║ Last Name            ║ Address                                            ║ Salary ║ Ag ║ Worker ║
-╠══════════════════╬══════════════════════╬════════════════════════════════════════════════════╬════════╬════╬════════╣
-║ Sebin            ║ Suresh               ║  1231 America lane, US                             ║ 100000 ║    ║        ║
-║ Obusmara         ║ Ulloa                ║                                                    ║        ║    ║        ║
-║ Ahmed            ║ Khaled               ║                                                    ║        ║    ║        ║
-╚══════════════════╩══════════════════════╩════════════════════════════════════════════════════╩════════╩════╩════════╝
-
-        */
-    }
-
-    // Returns string that containts what to print for one row of a table.
-    // Example of row[]: {"arry", "potta", "address1 address2", "12000", "32"}
-    //      widths[]: {15, 20, 50, 6, 3, 6}
-    //      startSymbol: "╔"
-    //      midSymbol: "╦"
-    //      endSymbol: "╗"
-    //      padSymbol: " "/"="
-    // The widths arrays length will be used to determine how many columns there should be.
-    public static String getRowFormatted(String[] row, int[] widths,
-                                         String startSymbol, String midSymbol,
-                                         String endSymbol, String padSymbol) {
-        String toReturn = startSymbol;
-        int nCols = widths.length;
-
-        for (int i = 0; i < nCols; i++) {
-
-            // Trim the value at this column to fit the table
-            int maxW = widths[i];
-            String col = row[i];
-            if (maxW < col.length())
-                col = col.substring(0, maxW);
-
-            String columnEndSymbol = midSymbol;
-            if (i == nCols - 1)
-                columnEndSymbol = endSymbol;
-
-            toReturn += String.format(padSymbol + "%-" + widths[i] + "s" + padSymbol + columnEndSymbol, col);
-        }
-
-        return toReturn;
-    }
-
-    // Moving old commented out code to clean up the main a bit
-    public static void oldMain(){
         // System.out.printf(String.format("+%46s\n", "+").replace(" ","-"));
         // System.out.printf("| %-20s | %-20s |\n", row[0], row[1]);
 
