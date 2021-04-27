@@ -199,6 +199,13 @@ public class Client {
                     getRowFormatted(row,spacesReserved,"║", "║", "║", " ")
             );
         }
+        // If there were no rows to print
+        if(results.size() == 0){
+            String noResStr = "No results found!";
+            // 119 total width - noResStr.length() - 4
+            int sides = (119 - noResStr.length() - 4)/2;
+            System.out.println("║" + " ".repeat(sides) + noResStr + " ".repeat(sides) + "║");
+        }
 
         // Print the bottom line
         System.out.println(
