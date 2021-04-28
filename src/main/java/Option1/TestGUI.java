@@ -1,5 +1,8 @@
 package Option1;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -13,6 +16,7 @@ public class TestGUI {
             {"102", "Jai", "780000"},
             {"101", "Sachin", "700000"}};
     String column[] = {"ID", "NAME", "SALARY"};
+    private int lafIndex = 0;
 
     TestGUI() {
 
@@ -62,13 +66,34 @@ public class TestGUI {
         button.addActionListener(e -> {
 
             // System.out.println("hello pressed");
-            System.out.println(e.getClass());
             // data[1][0] = "PRESSED";
             // table.repaint();
 
-            ((DefaultTableModel) table.getModel()).addRow(
-                    new Object[]{"NewVal_1", "NewVal_2", "NewVal_3"}
-            );
+            // ((DefaultTableModel) table.getModel()).addRow(
+            //         new Object[]{"NewVal_1", "NewVal_2", "NewVal_3"}
+            // );
+
+
+            // Toggling through available LAF's
+            try {
+                // UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+                UIManager.setLookAndFeel(UIManager.getInstalledLookAndFeels()[lafIndex].getClassName());
+                frame.repaint();
+
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (InstantiationException instantiationException) {
+                instantiationException.printStackTrace();
+            } catch (IllegalAccessException illegalAccessException) {
+                illegalAccessException.printStackTrace();
+            } catch (UnsupportedLookAndFeelException unsupportedLookAndFeelException) {
+                unsupportedLookAndFeelException.printStackTrace();
+            }
+
+            System.out.println(UIManager.getInstalledLookAndFeels()[lafIndex].getClassName());
+            lafIndex++;
+            lafIndex %= UIManager.getInstalledLookAndFeels().length;
+
         });
 
         // Set the preferred size for a button
@@ -98,6 +123,21 @@ public class TestGUI {
     }
 
     public static void main(String[] args) {
+
+        // Trying to set the Dark theme from FlatLAF
+        FlatDarkLaf.install();
+        FlatDarculaLaf.install();
+
+        try {
+            UIManager.setLookAndFeel( new FlatDarculaLaf() );
+        } catch( Exception ex ) {
+            System.err.println( "Failed to initialize LaF" );
+        }
+
+        for(UIManager.LookAndFeelInfo lafInfo : UIManager.getInstalledLookAndFeels()){
+            System.out.println(lafInfo.getClassName());
+        }
+
         TestGUI app = new TestGUI();
     }
 }
