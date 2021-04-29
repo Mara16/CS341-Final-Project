@@ -2,6 +2,7 @@ package Option1;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -88,7 +89,7 @@ public class GUI extends JFrame {
         // Add label's panel to mainPanel.
         mainPanel.add(labelPanel);
 
-
+        // TODO: Add table for results, label for no results, code to dynamically set them, etc.
     }
 
     // Adds a serach button to the GUI window, and event listeners for it.
@@ -124,6 +125,32 @@ public class GUI extends JFrame {
 
         // Add the button's panel to mainPanel.
         mainPanel.add(btnPanel);
+
+        // Make the button listen for clicks & send MQTT requests.
+        searchButton.addActionListener(e -> {
+
+            // Go through all input fields and prepare a query to send.
+            String[] row = new String[App.NUM_COLUMNS];
+            boolean atLeastOne = false;
+            for (int i = 0; i < App.NUM_COLUMNS; i++) {
+                String textFieldVal = textFields[i].getText();
+                if(!textFieldVal.trim().equals(""))
+                    atLeastOne = true;
+                row[i] = textFieldVal.trim();
+            }
+
+            // Send the query to Peer Machine.
+            if(atLeastOne){
+                try {
+                    App.client.sendMessageToPeerMachine(row);
+
+                } catch (MqttException mqttException) {
+                    mqttException.printStackTrace();
+                }
+            } else {
+                System.err.println("Enter at least one input!");
+            }
+        });
     }
 
     // Add the input fields & labels to the GUI.
