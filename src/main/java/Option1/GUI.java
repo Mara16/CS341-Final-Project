@@ -5,6 +5,9 @@ import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,6 +16,7 @@ import javax.swing.UIManager;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 
 
 // GUI class extends the JFrame class - new GUI() would open a new JFrame window
@@ -20,6 +24,9 @@ public class GUI extends JFrame {
 
     // The panel that contains all components.
     private JPanel mainPanel;
+
+    // The search button for searching for entries.
+    JButton searchButton;
 
     // The JTextField instances for the various search fields.
     private JTextField[] textFields = new JTextField[App.NUM_COLUMNS];
@@ -39,6 +46,8 @@ public class GUI extends JFrame {
 
         addTextFields();
 
+        addSearchButton();
+
         // add the mainPanel to the window.
         add(mainPanel);
 
@@ -53,6 +62,40 @@ public class GUI extends JFrame {
 
         // Launch and show the GUI.
         setVisible(true);
+    }
+
+    // Adds a serach button to the GUI window, and event listeners for it.
+    private void addSearchButton() {
+
+        // Create the panel for the button
+        JPanel btnPanel = new JPanel();
+        // Set the buttonPanel to have a flow layout with
+        // center-aligned components.
+        btnPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        // Add an empty bottom padding to the panel containing the buttons.
+        btnPanel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+
+        // Image taken from https://fonts.google.com/icons
+        Icon icon = new ImageIcon("src/main/java/Option1/search_icon.png");
+        // By default, the icon image cannot be resized - so we make a copy of that
+        // icon image with a lower size & set the newly created Image as the new icon.
+        Image img = ((ImageIcon) icon).getImage();
+        Image shrunkImg = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ((ImageIcon) icon).setImage(shrunkImg);
+
+        // Create the button, set the icon & other layout/design elements.
+        searchButton = new JButton("Search", icon);
+        searchButton.setPreferredSize(new Dimension(110, 40));
+
+        // Set the font size of the button to be 16.
+        searchButton.setFont(new Font(searchButton.getFont().getFontName(), Font.PLAIN, 16));
+
+        // Add the button to its panel.
+        btnPanel.add(searchButton);
+
+        // Add the button's panel to mainPanel.
+        mainPanel.add(btnPanel);
     }
 
     // Add the input fields & labels to the GUI.
