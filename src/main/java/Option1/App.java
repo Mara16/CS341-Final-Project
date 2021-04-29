@@ -41,11 +41,12 @@ public class App {
 
     static ActorSystem[] systems;
     static ActorRef[] pMachines;
+    static Client client;
 
     public static void main(String[] args) throws MqttException {
 
         // 1. Creates a Client object and Launches GUI through it.
-        Client client = new Client();
+        client = new Client();
 
         // 2. Creates and Launches two Peer Machines, each with its own ActorSystem to communicate with their workers.
         systems = new ActorSystem[NUM_PEER_MACHINES];
