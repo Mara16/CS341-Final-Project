@@ -6,6 +6,10 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.RoundRectangle2D;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class TestGUI {
 
@@ -20,10 +24,16 @@ public class TestGUI {
 
     TestGUI() {
 
-        frame = new JFrame();
+        // Setting the window to display on default/primary monitor.
+        // frame = new JFrame();
+
+        // Setting the window to display on second monitor.
+        // https://www.rgagnon.com/javadetails/java-show-jframe-on-a-specific-screen.html
+        frame = new JFrame(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1].getDefaultConfiguration());
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 1));
+        panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
+        // panel.setBackground(Color.CYAN);
 
 
         /*
@@ -55,31 +65,45 @@ public class TestGUI {
         // This link explains how to? :
         // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html#data
 
-        table.setBounds(30, 40, 200, 500);
+        // table.setBounds(30, 40, 300, 50);
         // table.setEnabled(false); // completely disable editing and selectng rows/cells
-        panel.add(new JScrollPane(table));
+
+        JPanel tablesPanel = new JPanel();
+        tablesPanel.setLayout(new BoxLayout(tablesPanel, BoxLayout.PAGE_AXIS));
+        tablesPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        tablesPanel.setPreferredSize(new Dimension(400, 200));
+        tablesPanel.add(new JScrollPane(table));
+        // tablesPanel.setBackground(Color.RED);
+
+        panel.add(tablesPanel);
 
         // Create a Button
         JButton button = new JButton("Hola");
+        JButton button2 = new JButton("Hola2");
 
         // Add a click event listener to the button
         button.addActionListener(e -> {
 
-            // System.out.println("hello pressed");
+            System.out.println("hola pressed");
             // data[1][0] = "PRESSED";
             // table.repaint();
 
-            // ((DefaultTableModel) table.getModel()).addRow(
-            //         new Object[]{"NewVal_1", "NewVal_2", "NewVal_3"}
-            // );
+            /*((DefaultTableModel) table.getModel()).addRow(
+                    new Object[]{"NewVal_1", "NewVal_2", "NewVal_3"}
+            );*/
 
+            var tableRows = Arrays.asList(tableModel.getDataVector());
+            System.out.println(tableRows);
+            Collections.reverse(tableRows);
+            // System.out.println(tableModel.getDataVector());
+            System.out.println(tableRows);
+            // ((DefaultTableModel) table.getModel()).setDataVector((Object[][]) data, column);
 
-            // Toggling through available LAF's
+            /*// Toggling through available LAF's
             try {
                 // UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
                 UIManager.setLookAndFeel(UIManager.getInstalledLookAndFeels()[lafIndex].getClassName());
                 frame.repaint();
-
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
             } catch (InstantiationException instantiationException) {
@@ -89,15 +113,16 @@ public class TestGUI {
             } catch (UnsupportedLookAndFeelException unsupportedLookAndFeelException) {
                 unsupportedLookAndFeelException.printStackTrace();
             }
-
             System.out.println(UIManager.getInstalledLookAndFeels()[lafIndex].getClassName());
             lafIndex++;
-            lafIndex %= UIManager.getInstalledLookAndFeels().length;
+            lafIndex %= UIManager.getInstalledLookAndFeels().length;*/
 
         });
 
         // Set the preferred size for a button
-        button.setPreferredSize(new Dimension(80, 80));
+        button.setMaximumSize(new Dimension(70, 50));
+        // button.setSize(new Dimension(100,100));
+        button2.setMaximumSize(new Dimension(70, 50));
 
         // Adding icons to JButtons (might be useful) using HTML:
         // https://stackoverflow.com/questions/61055090/jbutton-with-both-icon-on-top-and-text-on-bottom-aligned-to
@@ -108,34 +133,49 @@ public class TestGUI {
         // add the button to a panel, and add the
         // panel to other panel.
         // However, this makes the button layout out of our control?? I think
+
+        // Lot of code from:
+        // https://docs.oracle.com/javase/tutorial/uiswing/layout/box.html
+
+        // Panel for adding buttons to
         JPanel btnPanel = new JPanel();
+
+        btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.LINE_AXIS));
+        // btnPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
+        btnPanel.add(Box.createHorizontalGlue());
         btnPanel.add(button);
+        btnPanel.add(button2);
+        btnPanel.add(Box.createRigidArea(new Dimension(20,0)));
+        btnPanel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+        // btnPanel.setBackground(Color.YELLOW);
+        btnPanel.setPreferredSize(new Dimension(0, 80));
         panel.add(btnPanel);
 
         frame.add(panel);
         frame.setTitle("Testing Java Swing!");
-        // frame.pack();    // packs everything closely - overrides size?
-        frame.setSize(400, 300);
+        // frame.setMinimumSize(new Dimension(400, 300));
+        frame.pack();    // packs everything closely - overrides size?
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setVisible(true);
+        /*// Removing frame decorations like title
+        frame.setUndecorated(true);
+        // setting rounded corners - jagged for some reason
+        frame.setShape(new RoundRectangle2D.Double(0, 0, frame.getWidth(), frame.getHeight(), 50, 50));*/
 
+
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
 
         // Trying to set the Dark theme from FlatLAF
-        FlatDarkLaf.install();
-        FlatDarculaLaf.install();
+        // FlatDarkLaf.install();
+        FlatDarculaLaf.install();   // IntelliJ dark theme
 
         try {
             UIManager.setLookAndFeel( new FlatDarculaLaf() );
         } catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
-        }
-
-        for(UIManager.LookAndFeelInfo lafInfo : UIManager.getInstalledLookAndFeels()){
-            System.out.println(lafInfo.getClassName());
         }
 
         TestGUI app = new TestGUI();
