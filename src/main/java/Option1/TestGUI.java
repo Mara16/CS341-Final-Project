@@ -3,9 +3,24 @@ package Option1;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GraphicsEnvironment;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Arrays;
@@ -32,7 +47,7 @@ public class TestGUI {
         frame = new JFrame(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1].getDefaultConfiguration());
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         // panel.setBackground(Color.CYAN);
 
 
@@ -66,7 +81,7 @@ public class TestGUI {
         // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html#data
 
         // table.setBounds(30, 40, 300, 50);
-        // table.setEnabled(false); // completely disable editing and selectng rows/cells
+        table.setEnabled(false); // completely disable editing and selectng rows/cells
 
         JPanel tablesPanel = new JPanel();
         tablesPanel.setLayout(new BoxLayout(tablesPanel, BoxLayout.PAGE_AXIS));
@@ -145,8 +160,8 @@ public class TestGUI {
         btnPanel.add(Box.createHorizontalGlue());
         btnPanel.add(button);
         btnPanel.add(button2);
-        btnPanel.add(Box.createRigidArea(new Dimension(20,0)));
-        btnPanel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+        btnPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+        btnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         // btnPanel.setBackground(Color.YELLOW);
         btnPanel.setPreferredSize(new Dimension(0, 80));
         panel.add(btnPanel);
@@ -162,6 +177,48 @@ public class TestGUI {
         // setting rounded corners - jagged for some reason
         frame.setShape(new RoundRectangle2D.Double(0, 0, frame.getWidth(), frame.getHeight(), 50, 50));*/
 
+        JTextField text = new JTextField();
+        text.setToolTipText("Testing tooltip");
+        // Making the textfield select all text when it is clicked on/focused.
+        // Modified from: https://stackoverflow.com/a/38386682
+        FocusListener textSelectListener = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                JTextField focusedField = (JTextField) e.getSource();
+                focusedField.selectAll();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField focusedField = (JTextField) e.getSource();
+                focusedField.select(0, 0);
+            }
+        };
+        text.addFocusListener(textSelectListener);
+
+        JLabel textLabel = new JLabel("Label for text:");
+        textLabel.setPreferredSize(new Dimension(100, 20));
+        textLabel.setLabelFor(text);
+
+        JPanel textPanel = new JPanel();
+        textPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+        JPanel textPanel2 = new JPanel();
+        textPanel2.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+
+        textPanel.add(textLabel);
+        textPanel.add(text);
+        panel.add(textPanel);
+
+        JTextField text2 = new JTextField();
+        text2.addFocusListener(textSelectListener);
+        JLabel text2Label = new JLabel("Label for text2:");
+        text2Label.setPreferredSize(new Dimension(100, 20));
+        text2Label.setLabelFor(text2);
+
+        textPanel2.add(text2Label);
+        textPanel2.add(text2);
+        panel.add(textPanel2);
 
         frame.setVisible(true);
     }
@@ -173,9 +230,9 @@ public class TestGUI {
         FlatDarculaLaf.install();   // IntelliJ dark theme
 
         try {
-            UIManager.setLookAndFeel( new FlatDarculaLaf() );
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
+            UIManager.setLookAndFeel(new FlatDarculaLaf());
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize LaF");
         }
 
         TestGUI app = new TestGUI();
