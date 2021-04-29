@@ -143,11 +143,11 @@ public class Client {
             return;
         }
 
-        sendMessageToPeerMachine(row);
+        sendMessageToPeerMachines(row);
     }
 
-    // Method to send a row (row) to the PeerMachine over MQTT.
-    public void sendMessageToPeerMachine(String[] row) throws MqttException {
+    // Method to send a row (row) to the PeerMachines over MQTT.
+    public void sendMessageToPeerMachines(String[] row) throws MqttException {
         MqttMessage mqttMessage;
 
         Message msg = new Message(App.type.CL_2_PM, null, row, null);

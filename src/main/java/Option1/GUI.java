@@ -142,7 +142,7 @@ public class GUI extends JFrame {
             // Send the query to Peer Machine.
             if(atLeastOne){
                 try {
-                    App.client.sendMessageToPeerMachine(row);
+                    App.client.sendMessageToPeerMachines(row);
 
                 } catch (MqttException mqttException) {
                     mqttException.printStackTrace();
