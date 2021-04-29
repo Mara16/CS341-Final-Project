@@ -57,7 +57,7 @@ public class App {
         }
 
         // 3. Gets initial search query from client to get the system running.
-        client.userInput();
+        // client.userInput();
     }
 
     // Handles an MQTTExcpetion by printing the Exception details
