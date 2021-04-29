@@ -37,7 +37,7 @@ public class GUI extends JFrame {
 
         addHeading();
 
-        addFields();
+        addTextFields();
 
         // add the mainPanel to the window.
         add(mainPanel);
@@ -56,7 +56,7 @@ public class GUI extends JFrame {
     }
 
     // Add the input fields & labels to the GUI.
-    private void addFields() {
+    private void addTextFields() {
         // Strings to put in each label
         String[] labels = {"First Name", "Last Name", "Address", "Salary", "Age"};
 
@@ -65,14 +65,29 @@ public class GUI extends JFrame {
             // Create panel to add the textField and label to.
             JPanel textPanel = new JPanel();
 
-            // Set the panel to allow adding horizontally 10 pixels wide components.
-            textPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+            // Create some padding around the panel and below.
+            textPanel.setBorder(BorderFactory.createEmptyBorder(0,40,10,40));
 
+            // Set the panel to allow adding components horizontally with 10px gaps.
+            textPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+
+            // Create the textField, set the size & font size.
             textFields[i] = new JTextField();
+            textFields[i].setPreferredSize(new Dimension(200, 40));
+            textFields[i].setFont(new Font(textFields[i].getFont().getFontName(), Font.PLAIN, 14));
+
+            // Create the label, set the size & font size for the label, and assign it to the field.
             JLabel textLabel = new JLabel(labels[i]);
-            textLabel.setPreferredSize(new Dimension(100, 20));
+            textLabel.setPreferredSize(new Dimension(100, 40));
+            textLabel.setFont(new Font(textLabel.getFont().getFontName(), Font.PLAIN, 14));
             textLabel.setLabelFor(textFields[i]);
 
+            // Add the label and text field to the panel for it.
+            textPanel.add(textLabel);
+            textPanel.add(textFields[i]);
+
+            // Add this panel to the main panel.
+            mainPanel.add(textPanel);
         }
     }
 
@@ -89,7 +104,7 @@ public class GUI extends JFrame {
         JLabel headingLabel = new JLabel("Enter Search Terms");
 
         // set the font of the label to be the same font with bold
-        headingLabel.setFont(new Font(headingLabel.getFont().getFontName(), Font.BOLD, 14));
+        headingLabel.setFont(new Font(headingLabel.getFont().getFontName(), Font.BOLD, 16));
 
         // Add the label to its panel.
         headingPanel.add(headingLabel);
