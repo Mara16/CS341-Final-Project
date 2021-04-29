@@ -146,11 +146,11 @@ public class Client {
         sendMessageToPeerMachine(row);
     }
 
-    // Method to send a query to the PeerMachine over MQTT.
-    public void sendMessageToPeerMachine(String[] query) throws MqttException {
+    // Method to send a row (row) to the PeerMachine over MQTT.
+    public void sendMessageToPeerMachine(String[] row) throws MqttException {
         MqttMessage mqttMessage;
 
-        Message msg = new Message(App.type.CL_2_PM, null, query, null);
+        Message msg = new Message(App.type.CL_2_PM, null, row, null);
         gson = new Gson();
         String toSend = gson.toJson(msg);
 
