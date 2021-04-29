@@ -48,6 +48,8 @@ public class GUI extends JFrame {
 
         addSearchButton();
 
+        addResultComponents();
+
         // add the mainPanel to the window.
         add(mainPanel);
 
@@ -62,6 +64,31 @@ public class GUI extends JFrame {
 
         // Launch and show the GUI.
         setVisible(true);
+    }
+
+    // Method to add components to the GUI that show the results of search queries.
+    // Adds a Label for the "Search Results" title, JTable for containing the result,
+    // and another label (?) for containing the "No results found" message.
+    private void addResultComponents() {
+
+        // Panel for containing the search results label.
+        JPanel labelPanel = new JPanel();
+
+        // Set this panel to have a center-aligned layout for its contents.
+        labelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        // Add 10px padding below the panel.
+        labelPanel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+
+        // Create the actual label, set font size to 16, and add to panel.
+        JLabel resultLabel = new JLabel("Search Results");
+        resultLabel.setFont(new Font(resultLabel.getFont().getFontName(), Font.BOLD, 16));
+        labelPanel.add(resultLabel);
+
+        // Add label's panel to mainPanel.
+        mainPanel.add(labelPanel);
+
+
     }
 
     // Adds a serach button to the GUI window, and event listeners for it.
