@@ -10,8 +10,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+
 
 // GUI class extends the JFrame class - new GUI() would open a new JFrame window
 public class GUI extends JFrame {
@@ -35,6 +37,8 @@ public class GUI extends JFrame {
 
         addHeading();
 
+        addFields();
+
         // add the mainPanel to the window.
         add(mainPanel);
 
@@ -51,6 +55,27 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
+    // Add the input fields & labels to the GUI.
+    private void addFields() {
+        // Strings to put in each label
+        String[] labels = {"First Name", "Last Name", "Address", "Salary", "Age"};
+
+        for (int i = 0; i < App.NUM_COLUMNS; i++) {
+
+            // Create panel to add the textField and label to.
+            JPanel textPanel = new JPanel();
+
+            // Set the panel to allow adding horizontally 10 pixels wide components.
+            textPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+            textFields[i] = new JTextField();
+            JLabel textLabel = new JLabel(labels[i]);
+            textLabel.setPreferredSize(new Dimension(100, 20));
+            textLabel.setLabelFor(textFields[i]);
+
+        }
+    }
+
     // Add the heading label to the window.
     private void addHeading() {
         // Create JPanel to contain the label & center it using a FlowLayout.
@@ -58,7 +83,7 @@ public class GUI extends JFrame {
         headingPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // Add some padding (10px) to top and bottom.
-        headingPanel.setBorder(BorderFactory.createEmptyBorder(10, 0,10, 0));
+        headingPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         // Create the Label to its panel.
         JLabel headingLabel = new JLabel("Enter Search Terms");
