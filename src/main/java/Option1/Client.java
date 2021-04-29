@@ -90,7 +90,7 @@ public class Client {
                 // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
                 if (numberOfResponses == 2) {
                     System.out.println("\n" + fancyDivider);
-                    userInput();
+                    // userInput();
                 }
             }
 
