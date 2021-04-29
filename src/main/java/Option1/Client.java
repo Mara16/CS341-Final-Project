@@ -31,8 +31,10 @@ public class Client {
     // MQTT Client ID for the class
     final static String CLIENT_ID = "Team2_ClientMachine";
     private Gson gson;
-    String fancyDivider = "✼ •• ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ •• ✼";
-    String nonFancyDivider = "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈";
+    String fancyDivider = "✼ •• " +
+            "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ •• ✼";
+    String nonFancyDivider =
+            "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈";
 
     private int numberOfResponses = 0;
     private MqttClient mqttClient;
@@ -105,7 +107,7 @@ public class Client {
     }
 
     void userInput() throws MqttException {
-        MqttMessage mqttMessage;
+
         System.out.println("\nReady for a query! ʕ•́ᴥ•̀ʔっ♡" +
                 "\nAny field is optional (hit enter to skip)");
 
@@ -130,18 +132,25 @@ public class Client {
         String[] row = {firstName, lastName, address, salary, age};
 
         boolean atLeastone = false;
-        for(String queryField: row){
-            if(queryField != null & !queryField.trim().equals("")){
+        for (String queryField : row) {
+            if (queryField != null & !queryField.trim().equals("")) {
                 atLeastone = true;
             }
         }
-        if(!atLeastone){
+        if (!atLeastone) {
             System.err.println("Please enter at least one value!!!");
             userInput();
             return;
         }
 
-        Message msg = new Message(App.type.CL_2_PM, null, row, null);
+        sendMessageToPeerMachine(row);
+    }
+
+    // Method to send a query to the PeerMachine over MQTT.
+    public void sendMessageToPeerMachine(String[] query) throws MqttException {
+        MqttMessage mqttMessage;
+
+        Message msg = new Message(App.type.CL_2_PM, null, query, null);
         gson = new Gson();
         String toSend = gson.toJson(msg);
 
@@ -151,6 +160,7 @@ public class Client {
         mqttClient.publish("/CS341FinalProj/Team2/FromClient", mqttMessage);
         numberOfResponses = 0;
 
+        // Print the divider before the result table.
         System.out.println();
         System.out.print(fancyDivider);
         System.out.println();
@@ -158,7 +168,7 @@ public class Client {
 
     // Method that prints the rows contained within the results List parameter.
     // Note that the rows should have an extra column - the worker machine name.
-    public static void printTable(List<String[]> results){
+    public static void printTable(List<String[]> results) {
 
         String[] headings = {"First Name", "Last Name", "Address", "Salary", "Age", "Worker"};
         int[] spacesReserved = {15, 20, 50, 6, 3, 6};
@@ -169,42 +179,42 @@ public class Client {
 
         // Print the top line
         System.out.println(
-                getRowFormatted(lines,spacesReserved,"╔", "╦", "╗", "═")
+                getRowFormatted(lines, spacesReserved, "╔", "╦", "╗", "═")
         );
 
         // Print the headings
         System.out.println(
-                getRowFormatted(headings,spacesReserved,"║", "║", "║", " ")
+                getRowFormatted(headings, spacesReserved, "║", "║", "║", " ")
         );
 
         // Print the line below headings
         String midSymbol = "╬";
-        if(results.size() == 0)
+        if (results.size() == 0)
             midSymbol = "╩";
         System.out.println(
-                getRowFormatted(lines,spacesReserved,"╠", midSymbol, "╣", "═")
+                getRowFormatted(lines, spacesReserved, "╠", midSymbol, "╣", "═")
         );
 
         // Print the rows
-        for(String[] row: results){
+        for (String[] row : results) {
             System.out.println(
-                    getRowFormatted(row,spacesReserved,"║", "║", "║", " ")
+                    getRowFormatted(row, spacesReserved, "║", "║", "║", " ")
             );
         }
         // If there were no rows to print
-        if(results.size() == 0){
+        if (results.size() == 0) {
             String noResStr = "No results found!";
             // 119 total width - noResStr.length() - 4
-            int sides = (119 - noResStr.length() - 2)/2;
+            int sides = (119 - noResStr.length() - 2) / 2;
             System.out.println("║" + " ".repeat(sides) + noResStr + " ".repeat(sides) + "║");
         }
 
         // Print the bottom line
         midSymbol = "╩";
-        if(results.size() == 0)
+        if (results.size() == 0)
             midSymbol = "═";
         System.out.println(
-                getRowFormatted(lines,spacesReserved,"╚", midSymbol, "╝", "═")
+                getRowFormatted(lines, spacesReserved, "╚", midSymbol, "╝", "═")
         );
 
     }
