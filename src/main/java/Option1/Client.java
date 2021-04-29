@@ -41,6 +41,7 @@ public class Client {
 
         try {
             createAndInitializeMQTT();
+            new GUI();
 
         } catch (MqttException e) {
             App.handleMQTTException(e);
