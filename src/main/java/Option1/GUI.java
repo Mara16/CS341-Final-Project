@@ -18,11 +18,13 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.util.List;
 
 
 // GUI class extends the JFrame class - new GUI() would open a new JFrame window
@@ -39,6 +41,9 @@ public class GUI extends JFrame {
 
     // The JTable that contains the results from the search.
     JTable resultTable;
+
+    // The CardPanel that contains the result table or message.
+    JPanel resultPanel;
 
     // Constructor
     public GUI() {
@@ -71,6 +76,9 @@ public class GUI extends JFrame {
         // Packs all components closely.
         pack();
 
+        // Disable resizing of the GUI window.
+        setResizable(false);
+
         // Launch and show the GUI.
         setVisible(true);
     }
@@ -87,7 +95,7 @@ public class GUI extends JFrame {
         labelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // Add 10px padding below the panel.
-        labelPanel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+        labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
         // Create the actual label, set font size to 16, and add to panel.
         JLabel resultLabel = new JLabel("Search Results");
@@ -97,13 +105,44 @@ public class GUI extends JFrame {
         // Add label's panel to mainPanel.
         mainPanel.add(labelPanel);
 
-        // TODO: Add table for results, label for no results, code to dynamically set them, etc.
+        // Initialize the resultPanel, which contains both the result table,
+        // and the label which shows there's no result available.
+        // Both of those components are placed in a CardLayout - which means
+        // they can be swapped out by calling various methods of this LayoutManager.
+        // (next(), previous(), last(), first(), etc.)
+        resultPanel = new JPanel(new CardLayout());
         addNoResultLabel();
         addResultTable();
 
+        // Manually set the size of the resultPanel.
+        resultPanel.setPreferredSize(new Dimension(600, 50));
+
+        mainPanel.add(resultPanel);
     }
 
-    // Add the JTable to the GUI which contains the results of the serach query.
+    // Set the results - either display the table or a label saying there's no results.
+    public void setResults(List<String[]> results) {
+
+        if (results.size() == 0) {
+            // If there are no results, show the no-results label.
+            ((CardLayout) resultPanel.getLayout()).first(resultPanel);
+
+            // Prepare the window for resizing, by setting the correct size.
+            resultPanel.setPreferredSize(new Dimension(600, 50));
+
+        } else {
+            // If there are results, show the table.
+            ((CardLayout) resultPanel.getLayout()).last(resultPanel);
+
+            // Prepare the window for resizing, by setting the correct size.
+            resultPanel.setPreferredSize(new Dimension(600, 400));
+
+        }
+        // Resize the window.
+        pack();
+    }
+
+    // Add the JTable to the resultPanel, containing the results of the serach query.
     private void addResultTable() {
 
         // Add an outer panel for the Table - we want to ensure we can assign a
@@ -112,8 +151,7 @@ public class GUI extends JFrame {
 
         // Use a BoxLayout for this.
         tableOuterPanel.setLayout(new BoxLayout(tableOuterPanel, BoxLayout.PAGE_AXIS));
-        tableOuterPanel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
-        tableOuterPanel.setPreferredSize(new Dimension(800, 400));
+        tableOuterPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
         // Initialize the JTable with 1 row and Column headers.
         resultTable = new JTable(
@@ -131,18 +169,20 @@ public class GUI extends JFrame {
         // column headers, and add scrollbars to the thing.
         tableOuterPanel.add(new JScrollPane(resultTable));
 
-        // Add the outer panel to the main panel.
-        mainPanel.add(tableOuterPanel);
+        // Add the table's outer panel to the resultPanel.
+        // Note: resultPanel has a CardLayout, and this panel
+        // will be added as one of the "cards".
+        resultPanel.add(tableOuterPanel);
     }
 
-    // Adds a label to the GUI for showing when there aren't any results to the search query.
+    // Adds a label to the resultPanel for showing when there aren't any results to the search query.
     private void addNoResultLabel() {
 
         // Create an outer panel so that there's some space
         // between the edges of window and the label.
         JPanel labelOuterPanel = new JPanel();
         labelOuterPanel.setLayout(new BorderLayout());
-        labelOuterPanel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+        labelOuterPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
         // Create an inner panel to contain the label (centered)
         JPanel labelInnerPanel = new JPanel();
@@ -159,8 +199,10 @@ public class GUI extends JFrame {
         // Adding the inner panel to the outer panel.
         labelOuterPanel.add(labelInnerPanel);
 
-        // Add the outer panel to the main panel.
-        mainPanel.add(labelOuterPanel);
+        // Add the label's outer panel to the resultPanel.
+        // Note: resultPanel has a CardLayout, and this panel
+        // will be added as one of the "cards".
+        resultPanel.add(labelOuterPanel);
     }
 
     // Adds a serach button to the GUI window, and event listeners for it.
@@ -173,7 +215,7 @@ public class GUI extends JFrame {
         btnPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // Add an empty bottom padding to the panel containing the buttons.
-        btnPanel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+        btnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
         // Image taken from https://fonts.google.com/icons
         Icon icon = new ImageIcon("src/main/java/Option1/search_icon.png");
@@ -204,13 +246,13 @@ public class GUI extends JFrame {
             boolean atLeastOne = false;
             for (int i = 0; i < App.NUM_COLUMNS; i++) {
                 String textFieldVal = textFields[i].getText();
-                if(!textFieldVal.trim().equals(""))
+                if (!textFieldVal.trim().equals(""))
                     atLeastOne = true;
                 row[i] = textFieldVal.trim();
             }
 
             // Send the query to Peer Machine.
-            if(atLeastOne){
+            if (atLeastOne) {
                 try {
                     App.client.sendMessageToPeerMachines(row);
 
@@ -234,7 +276,7 @@ public class GUI extends JFrame {
             JPanel textPanel = new JPanel();
 
             // Create some padding around the panel and below.
-            textPanel.setBorder(BorderFactory.createEmptyBorder(0,40,10,40));
+            textPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 10, 40));
 
             // Set the panel to allow adding components horizontally with 10px gaps.
             textPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
