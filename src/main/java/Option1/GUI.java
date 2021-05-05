@@ -134,6 +134,8 @@ public class GUI extends JFrame {
             // If there are results, show the table.
             ((CardLayout) resultPanel.getLayout()).last(resultPanel);
 
+            // TODO Set the table content - refer to TestGUI.java
+
             // Prepare the window for resizing, by setting the correct size.
             resultPanel.setPreferredSize(new Dimension(600, 400));
 
