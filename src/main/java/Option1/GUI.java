@@ -93,7 +93,6 @@ public class GUI extends JFrame {
     }
 
     // Adds a serach button to the GUI window, and event listeners for it.
-    // TODO: Add eventListener to the button to actually send the search request.
     private void addSearchButton() {
 
         // Create the panel for the button
