@@ -24,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,11 +40,15 @@ public class Client {
     private int numberOfResponses = 0;
     private MqttClient mqttClient;
 
+    private GUI gui;
+    private List<String[]> combinedResultList;
+
     public Client() {
 
         try {
             createAndInitializeMQTT();
-            new GUI();
+            gui = new GUI();
+            combinedResultList = new ArrayList<>();
 
         } catch (MqttException e) {
             App.handleMQTTException(e);
@@ -85,11 +90,15 @@ public class Client {
                 // output result to user
                 List<String[]> result = msgFromPM.results;
                 printTable(result);
+                combinedResultList.addAll(result);
 
                 numberOfResponses++;
                 // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
                 if (numberOfResponses == 2) {
                     System.out.println("\n" + fancyDivider);
+
+                    // Send the combined results to GUI
+                    gui.setResults(combinedResultList);
                     // userInput();
                 }
             }
