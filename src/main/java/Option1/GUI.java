@@ -12,8 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -90,6 +94,36 @@ public class GUI extends JFrame {
         mainPanel.add(labelPanel);
 
         // TODO: Add table for results, label for no results, code to dynamically set them, etc.
+        addNoResultLabel();
+
+    }
+
+    // Adds a label to the GUI for showing when there aren't any results to the search query.
+    private void addNoResultLabel() {
+
+        // Create an outer panel so that there's some space
+        // between the edges of window and the label.
+        JPanel labelOuterPanel = new JPanel();
+        labelOuterPanel.setLayout(new BorderLayout());
+        labelOuterPanel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+
+        // Create an inner panel to contain the label (centered)
+        JPanel labelInnerPanel = new JPanel();
+        labelInnerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        // Give the inner panel a background color.
+        // labelInnerPanel.setBackground(Color.GRAY);
+
+        // Creating, setting the font size, and adding to panel the no-results label.
+        JLabel noResultLabel = new JLabel("No Results Found :(");
+        noResultLabel.setFont(new Font(noResultLabel.getFont().getFontName(), Font.PLAIN, 15));
+        labelInnerPanel.add(noResultLabel);
+
+        // Adding the inner panel to the outer panel.
+        labelOuterPanel.add(labelInnerPanel);
+
+        // Add the outer panel to the main panel.
+        mainPanel.add(labelOuterPanel);
     }
 
     // Adds a serach button to the GUI window, and event listeners for it.
