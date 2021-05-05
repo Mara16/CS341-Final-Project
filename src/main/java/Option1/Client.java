@@ -90,7 +90,9 @@ public class Client {
                 // output result to user
                 List<String[]> result = msgFromPM.results;
                 printTable(result);
-                combinedResultList.addAll(result);
+
+                if(result.size() != 0)
+                    combinedResultList.addAll(result);
 
                 numberOfResponses++;
                 // The user, through the terminal/GUI, can send another query if both PeerMachines have replied
@@ -99,6 +101,10 @@ public class Client {
 
                     // Send the combined results to GUI
                     gui.setResults(combinedResultList);
+
+                    // Reset the combined results list.
+                    combinedResultList.clear();
+
                     // userInput();
                 }
             }
