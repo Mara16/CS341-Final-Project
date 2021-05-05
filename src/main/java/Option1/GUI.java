@@ -138,6 +138,7 @@ public class GUI extends JFrame {
             resultPanel.setPreferredSize(new Dimension(600, 400));
 
         }
+
         // Resize the window.
         pack();
     }
