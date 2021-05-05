@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -35,6 +36,9 @@ public class GUI extends JFrame {
 
     // The JTextField instances for the various search fields.
     private JTextField[] textFields = new JTextField[App.NUM_COLUMNS];
+
+    // The JTable that contains the results from the search.
+    JTable resultTable;
 
     // Constructor
     public GUI() {
@@ -95,7 +99,40 @@ public class GUI extends JFrame {
 
         // TODO: Add table for results, label for no results, code to dynamically set them, etc.
         addNoResultLabel();
+        addResultTable();
 
+    }
+
+    // Add the JTable to the GUI which contains the results of the serach query.
+    private void addResultTable() {
+
+        // Add an outer panel for the Table - we want to ensure we can assign a
+        // specific width/height dimension to the table.
+        JPanel tableOuterPanel = new JPanel();
+
+        // Use a BoxLayout for this.
+        tableOuterPanel.setLayout(new BoxLayout(tableOuterPanel, BoxLayout.PAGE_AXIS));
+        tableOuterPanel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+        tableOuterPanel.setPreferredSize(new Dimension(800, 400));
+
+        // Initialize the JTable with 1 row and Column headers.
+        resultTable = new JTable(
+                new DefaultTableModel(
+                        new String[][]{{}},
+                        new String[]{"First Name", "Last Name", "Address", "Salary", "Age", "Worker Machine"}
+                )
+        );
+
+        // completely disable editing and selectng rows/cells
+        resultTable.setEnabled(false);
+
+        // Add the table to the outer panel, by wrapping it in a
+        // JScrollPane. The ScrollPane will allow showing the
+        // column headers, and add scrollbars to the thing.
+        tableOuterPanel.add(new JScrollPane(resultTable));
+
+        // Add the outer panel to the main panel.
+        mainPanel.add(tableOuterPanel);
     }
 
     // Adds a label to the GUI for showing when there aren't any results to the search query.
