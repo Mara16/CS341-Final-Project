@@ -134,11 +134,21 @@ public class GUI extends JFrame {
             // If there are results, show the table.
             ((CardLayout) resultPanel.getLayout()).last(resultPanel);
 
-            // TODO Set the table content - refer to TestGUI.java
-
             // Prepare the window for resizing, by setting the correct size.
             resultPanel.setPreferredSize(new Dimension(600, 400));
 
+            // Get the table's model - This allows you to add values to the table.
+            DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
+
+            // Clear all rows first.
+            tableModel.setNumRows(0);
+
+            // Add values to the table model.
+            // Changes are reflected automatically
+            // in the associated JTable.
+            for (String[] row : results) {
+                tableModel.addRow(row);
+            }
         }
 
         // Resize the window.
