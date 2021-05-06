@@ -89,7 +89,7 @@ public class GUI extends JFrame {
         pack();
 
         // Disable resizing of the GUI window.
-        setResizable(false);
+        // setResizable(false);
 
         // Launch and show the GUI.
         setVisible(true);
@@ -279,7 +279,10 @@ public class GUI extends JFrame {
             ((CardLayout) resultPanel.getLayout()).last(resultPanel);
 
             // Prepare the window for resizing, by setting the correct size.
-            resultPanel.setPreferredSize(new Dimension(600, 400));
+            int maxHeight = 300;
+            int height = results.size() * 20;
+            height = Math.min(height, maxHeight);
+            resultPanel.setPreferredSize(new Dimension(600, 50 + height));
 
             // Get the table's model - This allows you to add values to the table.
             DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
