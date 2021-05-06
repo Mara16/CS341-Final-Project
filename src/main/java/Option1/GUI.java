@@ -29,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -346,6 +347,15 @@ public class GUI extends JFrame {
                         new String[]{"First Name", "Last Name", "Address", "Salary", "Age", "Worker"}
                 )
         );
+
+        // Set widths of columns in Table
+        TableColumnModel columnModel = resultTable.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(90);
+        columnModel.getColumn(1).setPreferredWidth(90);
+        columnModel.getColumn(2).setPreferredWidth(200);
+        columnModel.getColumn(3).setPreferredWidth(60);
+        columnModel.getColumn(4).setPreferredWidth(40);
+        columnModel.getColumn(5).setPreferredWidth(70);
 
         // completely disable editing and selectng rows/cells
         // resultTable.setEnabled(false);
