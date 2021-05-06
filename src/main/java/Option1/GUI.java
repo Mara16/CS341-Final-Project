@@ -94,139 +94,75 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
-    // Method to add components to the GUI that show the results of search queries.
-    // Adds a Label for the "Search Results" title, JTable for containing the result,
-    // and another label (?) for containing the "No results found" message.
-    private void addResultComponents() {
+    // Initialize the theme/Look and Feel for GUI - "FlatDarcula".
+    private void initializeTheming() {
+        // Set up the cool dark theme for GUI.
+        FlatDarculaLaf.install();
 
-        // Panel for containing the search results label.
-        JPanel labelPanel = new JPanel();
-
-        // Set this panel to have a center-aligned layout for its contents.
-        labelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-        // Add 10px padding below the panel.
-        labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-
-        // Create the actual label, set font size to 16, and add to panel.
-        JLabel resultLabel = new JLabel("Search Results");
-        resultLabel.setFont(new Font(resultLabel.getFont().getFontName(), Font.BOLD, 16));
-        labelPanel.add(resultLabel);
-
-        // Add label's panel to mainPanel.
-        mainPanel.add(labelPanel);
-
-        // Initialize the resultPanel, which contains both the result table,
-        // and the label which shows there's no result available.
-        // Both of those components are placed in a CardLayout - which means
-        // they can be swapped out by calling various methods of this LayoutManager.
-        // (next(), previous(), last(), first(), etc.)
-        resultPanel = new JPanel(new CardLayout());
-        addNoResultLabel();
-        addResultTable();
-
-        // Manually set the size of the resultPanel.
-        resultPanel.setPreferredSize(new Dimension(600, 50));
-
-        mainPanel.add(resultPanel);
-    }
-
-    // Set the results - either display the table or a label saying there's no results.
-    public void setResults(List<String[]> results) {
-
-        if (results.size() == 0) {
-            // If there are no results, show the no-results label.
-            ((CardLayout) resultPanel.getLayout()).first(resultPanel);
-
-            // Prepare the window for resizing, by setting the correct size.
-            resultPanel.setPreferredSize(new Dimension(600, 50));
-
-        } else {
-            // If there are results, show the table.
-            ((CardLayout) resultPanel.getLayout()).last(resultPanel);
-
-            // Prepare the window for resizing, by setting the correct size.
-            resultPanel.setPreferredSize(new Dimension(600, 400));
-
-            // Get the table's model - This allows you to add values to the table.
-            DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
-
-            // Clear all rows first.
-            tableModel.setNumRows(0);
-
-            // Add values to the table model.
-            // Changes are reflected automatically
-            // in the associated JTable.
-            for (String[] row : results) {
-                tableModel.addRow(row);
-            }
+        // Set this as the Look and Feel
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception ex) {
+            System.out.println("LaF setting failed.");
         }
-
-        // Resize the window.
-        pack();
     }
 
-    // Add the JTable to the resultPanel, containing the results of the serach query.
-    private void addResultTable() {
+    // Add the heading label to the window.
+    private void addHeading() {
+        // Create JPanel to contain the label & center it using a FlowLayout.
+        JPanel headingPanel = new JPanel();
+        headingPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        // Add an outer panel for the Table - we want to ensure we can assign a
-        // specific width/height dimension to the table.
-        JPanel tableOuterPanel = new JPanel();
+        // Add some padding (10px) to top and bottom.
+        headingPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
-        // Use a BoxLayout for this.
-        tableOuterPanel.setLayout(new BoxLayout(tableOuterPanel, BoxLayout.PAGE_AXIS));
-        tableOuterPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        // Create the Label to its panel.
+        JLabel headingLabel = new JLabel("Enter Search Terms");
 
-        // Initialize the JTable with 1 row and Column headers.
-        resultTable = new JTable(
-                new DefaultTableModel(
-                        new String[][]{{}},
-                        new String[]{"First Name", "Last Name", "Address", "Salary", "Age", "Worker"}
-                )
-        );
+        // set the font of the label to be the same font with bold
+        headingLabel.setFont(new Font(headingLabel.getFont().getFontName(), Font.BOLD, 16));
 
-        // completely disable editing and selectng rows/cells
-        // resultTable.setEnabled(false);
+        // Add the label to its panel.
+        headingPanel.add(headingLabel);
 
-        // Add the table to the outer panel, by wrapping it in a
-        // JScrollPane. The ScrollPane will allow showing the
-        // column headers, and add scrollbars to the thing.
-        tableOuterPanel.add(new JScrollPane(resultTable));
-
-        // Add the table's outer panel to the resultPanel.
-        // Note: resultPanel has a CardLayout, and this panel
-        // will be added as one of the "cards".
-        resultPanel.add(tableOuterPanel);
+        // Add the heading's panel to the mainPanel.
+        mainPanel.add(headingPanel);
     }
 
-    // Adds a label to the resultPanel for showing when there aren't any results to the search query.
-    private void addNoResultLabel() {
+    // Add the input fields & labels to the GUI.
+    private void addTextFields() {
+        // Strings to put in each label
+        String[] labels = {"First Name", "Last Name", "Address", "Salary", "Age"};
 
-        // Create an outer panel so that there's some space
-        // between the edges of window and the label.
-        JPanel labelOuterPanel = new JPanel();
-        labelOuterPanel.setLayout(new BorderLayout());
-        labelOuterPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        for (int i = 0; i < App.NUM_COLUMNS; i++) {
 
-        // Create an inner panel to contain the label (centered)
-        JPanel labelInnerPanel = new JPanel();
-        labelInnerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            // Create panel to add the textField and label to.
+            JPanel textPanel = new JPanel();
 
-        // Give the inner panel a background color.
-        // labelInnerPanel.setBackground(Color.GRAY);
+            // Create some padding around the panel and below.
+            textPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 10, 40));
 
-        // Creating, setting the font size, and adding to panel the no-results label.
-        JLabel noResultLabel = new JLabel("No Results Found :(");
-        noResultLabel.setFont(new Font(noResultLabel.getFont().getFontName(), Font.PLAIN, 15));
-        labelInnerPanel.add(noResultLabel);
+            // Set the panel to allow adding components horizontally with 10px gaps.
+            textPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
 
-        // Adding the inner panel to the outer panel.
-        labelOuterPanel.add(labelInnerPanel);
+            // Create the textField, set the size & font size.
+            textFields[i] = new JTextField();
+            textFields[i].setPreferredSize(new Dimension(200, 40));
+            textFields[i].setFont(new Font(textFields[i].getFont().getFontName(), Font.PLAIN, 14));
 
-        // Add the label's outer panel to the resultPanel.
-        // Note: resultPanel has a CardLayout, and this panel
-        // will be added as one of the "cards".
-        resultPanel.add(labelOuterPanel);
+            // Create the label, set the size & font size for the label, and assign it to the field.
+            JLabel textLabel = new JLabel(labels[i]);
+            textLabel.setPreferredSize(new Dimension(100, 40));
+            textLabel.setFont(new Font(textLabel.getFont().getFontName(), Font.PLAIN, 14));
+            textLabel.setLabelFor(textFields[i]);
+
+            // Add the label and text field to the panel for it.
+            textPanel.add(textLabel);
+            textPanel.add(textFields[i]);
+
+            // Add this panel to the main panel.
+            mainPanel.add(textPanel);
+        }
     }
 
     // Adds a serach button to the GUI window, and event listeners for it.
@@ -289,74 +225,140 @@ public class GUI extends JFrame {
         });
     }
 
-    // Add the input fields & labels to the GUI.
-    private void addTextFields() {
-        // Strings to put in each label
-        String[] labels = {"First Name", "Last Name", "Address", "Salary", "Age"};
+    // Method to add components to the GUI that show the results of search queries.
+    // Adds a Label for the "Search Results" title, JTable for containing the result,
+    // and another label (?) for containing the "No results found" message.
+    private void addResultComponents() {
 
-        for (int i = 0; i < App.NUM_COLUMNS; i++) {
+        // Panel for containing the search results label.
+        JPanel labelPanel = new JPanel();
 
-            // Create panel to add the textField and label to.
-            JPanel textPanel = new JPanel();
+        // Set this panel to have a center-aligned layout for its contents.
+        labelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-            // Create some padding around the panel and below.
-            textPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 10, 40));
+        // Add 10px padding below the panel.
+        labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
-            // Set the panel to allow adding components horizontally with 10px gaps.
-            textPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        // Create the actual label, set font size to 16, and add to panel.
+        JLabel resultLabel = new JLabel("Search Results");
+        resultLabel.setFont(new Font(resultLabel.getFont().getFontName(), Font.BOLD, 16));
+        labelPanel.add(resultLabel);
 
-            // Create the textField, set the size & font size.
-            textFields[i] = new JTextField();
-            textFields[i].setPreferredSize(new Dimension(200, 40));
-            textFields[i].setFont(new Font(textFields[i].getFont().getFontName(), Font.PLAIN, 14));
+        // Add label's panel to mainPanel.
+        mainPanel.add(labelPanel);
 
-            // Create the label, set the size & font size for the label, and assign it to the field.
-            JLabel textLabel = new JLabel(labels[i]);
-            textLabel.setPreferredSize(new Dimension(100, 40));
-            textLabel.setFont(new Font(textLabel.getFont().getFontName(), Font.PLAIN, 14));
-            textLabel.setLabelFor(textFields[i]);
+        // Initialize the resultPanel, which contains both the result table,
+        // and the label which shows there's no result available.
+        // Both of those components are placed in a CardLayout - which means
+        // they can be swapped out by calling various methods of this LayoutManager.
+        // (next(), previous(), last(), first(), etc.)
+        resultPanel = new JPanel(new CardLayout());
 
-            // Add the label and text field to the panel for it.
-            textPanel.add(textLabel);
-            textPanel.add(textFields[i]);
+        addNoResultLabel();
+        addResultTable();
 
-            // Add this panel to the main panel.
-            mainPanel.add(textPanel);
+        // Manually set the size of the resultPanel.
+        resultPanel.setPreferredSize(new Dimension(600, 50));
+
+        mainPanel.add(resultPanel);
+    }
+
+    // Set the results - either display the table or a label saying there's no results.
+    public void setResults(List<String[]> results) {
+
+        if (results.size() == 0) {
+            // If there are no results, show the no-results label.
+            ((CardLayout) resultPanel.getLayout()).first(resultPanel);
+
+            // Prepare the window for resizing, by setting the correct size.
+            resultPanel.setPreferredSize(new Dimension(600, 50));
+
+        } else {
+            // If there are results, show the table.
+            ((CardLayout) resultPanel.getLayout()).last(resultPanel);
+
+            // Prepare the window for resizing, by setting the correct size.
+            resultPanel.setPreferredSize(new Dimension(600, 400));
+
+            // Get the table's model - This allows you to add values to the table.
+            DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
+
+            // Clear all rows first.
+            tableModel.setNumRows(0);
+
+            // Add values to the table model.
+            // Changes are reflected automatically
+            // in the associated JTable.
+            for (String[] row : results) {
+                tableModel.addRow(row);
+            }
         }
+
+        // Resize the window.
+        pack();
     }
 
-    // Add the heading label to the window.
-    private void addHeading() {
-        // Create JPanel to contain the label & center it using a FlowLayout.
-        JPanel headingPanel = new JPanel();
-        headingPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+    // Adds a label to the resultPanel for showing when there aren't any results to the search query.
+    private void addNoResultLabel() {
 
-        // Add some padding (10px) to top and bottom.
-        headingPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        // Create an outer panel so that there's some space
+        // between the edges of window and the label.
+        JPanel labelOuterPanel = new JPanel();
+        labelOuterPanel.setLayout(new BorderLayout());
+        labelOuterPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-        // Create the Label to its panel.
-        JLabel headingLabel = new JLabel("Enter Search Terms");
+        // Create an inner panel to contain the label (centered)
+        JPanel labelInnerPanel = new JPanel();
+        labelInnerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        // set the font of the label to be the same font with bold
-        headingLabel.setFont(new Font(headingLabel.getFont().getFontName(), Font.BOLD, 16));
+        // Give the inner panel a background color.
+        // labelInnerPanel.setBackground(Color.GRAY);
 
-        // Add the label to its panel.
-        headingPanel.add(headingLabel);
+        // Creating, setting the font size, and adding to panel the no-results label.
+        JLabel noResultLabel = new JLabel("No Results Found :(");
+        noResultLabel.setFont(new Font(noResultLabel.getFont().getFontName(), Font.PLAIN, 15));
+        labelInnerPanel.add(noResultLabel);
 
-        // Add the heading's panel to the mainPanel.
-        mainPanel.add(headingPanel);
+        // Adding the inner panel to the outer panel.
+        labelOuterPanel.add(labelInnerPanel);
+
+        // Add the label's outer panel to the resultPanel.
+        // Note: resultPanel has a CardLayout, and this panel
+        // will be added as one of the "cards".
+        resultPanel.add(labelOuterPanel);
     }
 
-    // Initialize the theme/Look and Feel for GUI - "FlatDarcula".
-    private void initializeTheming() {
-        // Set up the cool dark theme for GUI.
-        FlatDarculaLaf.install();
+    // Add the JTable to the resultPanel, containing the results of the serach query.
+    private void addResultTable() {
 
-        // Set this as the Look and Feel
-        try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
-        } catch (Exception ex) {
-            System.out.println("LaF setting failed.");
-        }
+        // Add an outer panel for the Table - we want to ensure we can assign a
+        // specific width/height dimension to the table.
+        JPanel tableOuterPanel = new JPanel();
+
+        // Use a BoxLayout for this.
+        tableOuterPanel.setLayout(new BoxLayout(tableOuterPanel, BoxLayout.PAGE_AXIS));
+        tableOuterPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+
+        // Initialize the JTable with 1 row and Column headers.
+        resultTable = new JTable(
+                new DefaultTableModel(
+                        new String[][]{{}},
+                        new String[]{"First Name", "Last Name", "Address", "Salary", "Age", "Worker"}
+                )
+        );
+
+        // completely disable editing and selectng rows/cells
+        // resultTable.setEnabled(false);
+
+        // Add the table to the outer panel, by wrapping it in a
+        // JScrollPane. The ScrollPane will allow showing the
+        // column headers, and add scrollbars to the thing.
+        tableOuterPanel.add(new JScrollPane(resultTable));
+
+        // Add the table's outer panel to the resultPanel.
+        // Note: resultPanel has a CardLayout, and this panel
+        // will be added as one of the "cards".
+        resultPanel.add(tableOuterPanel);
     }
+
 }
