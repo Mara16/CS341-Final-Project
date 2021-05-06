@@ -175,7 +175,7 @@ public class GUI extends JFrame {
         );
 
         // completely disable editing and selectng rows/cells
-        resultTable.setEnabled(false);
+        // resultTable.setEnabled(false);
 
         // Add the table to the outer panel, by wrapping it in a
         // JScrollPane. The ScrollPane will allow showing the
