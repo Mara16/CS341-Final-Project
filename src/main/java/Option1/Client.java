@@ -32,10 +32,8 @@ public class Client {
     // MQTT Client ID for the class
     final static String CLIENT_ID = "Team2_ClientMachine";
     private Gson gson;
-    String fancyDivider = "✼ •• " +
-            "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ •• ✼";
-    String nonFancyDivider =
-            "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈";
+    String fancyDivider = "✼ •• " + "┈".repeat(113) + " •• ✼";
+    String nonFancyDivider = "┈".repeat(91);
 
     private int numberOfResponses = 0;
     private MqttClient mqttClient;
