@@ -170,7 +170,7 @@ public class GUI extends JFrame {
         resultTable = new JTable(
                 new DefaultTableModel(
                         new String[][]{{}},
-                        new String[]{"First Name", "Last Name", "Address", "Salary", "Age", "Worker Machine"}
+                        new String[]{"First Name", "Last Name", "Address", "Salary", "Age", "Worker"}
                 )
         );
 
