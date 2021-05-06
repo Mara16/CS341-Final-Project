@@ -350,12 +350,9 @@ public class GUI extends JFrame {
 
         // Set widths of columns in Table
         TableColumnModel columnModel = resultTable.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(90);
-        columnModel.getColumn(1).setPreferredWidth(90);
-        columnModel.getColumn(2).setPreferredWidth(200);
-        columnModel.getColumn(3).setPreferredWidth(60);
-        columnModel.getColumn(4).setPreferredWidth(40);
-        columnModel.getColumn(5).setPreferredWidth(70);
+        int[] widths = {90, 90, 200, 60, 40, 70};
+        for (int i = 0; i < columnModel.getColumnCount(); i++)
+            columnModel.getColumn(i).setPreferredWidth(widths[i]);
 
         // completely disable editing and selectng rows/cells
         // resultTable.setEnabled(false);
